@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A love letter in the shape of a website. Two years, one tab." />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>For Shriyanshi Gupta, Always 🤍</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Pacifico&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     LOADING SCREEN
+═══════════════════════════════════════════ -->
+<div id="loading-screen">
+  <div class="loader-mascots">
+    <img src="./assets/bear.png" alt="Bear" class="loader-bear" />
+    <div class="loader-hearts">💖💛💖</div>
+    <img src="./assets/squirrel.png" alt="Squirrel" class="loader-squirrel" />
+  </div>
+  <p class="loader-text">Loading something special...</p>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FLOATING HEARTS BACKGROUND
+═══════════════════════════════════════════ -->
+<div id="hearts-bg" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════ -->
+<nav id="nav" class="nav hidden" aria-label="Main navigation">
+  <div class="nav-pill">
+    <button class="nav-btn" data-target="dashboard" id="nav-home">Home</button>
+    <span class="nav-sep">·</span>
+    <button class="nav-btn" data-target="timeline" id="nav-timeline">Our Story</button>
+    <span class="nav-sep">·</span>
+    <button class="nav-btn" data-target="evening" id="nav-evening">Evening Walk</button>
+    <span class="nav-sep">·</span>
+    <button class="nav-btn" data-target="letters" id="nav-letters">Open When</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     APP CONTAINER
+═══════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ─────────────────────────────────────────
+       SCREEN: PRIVACY GATE
+  ───────────────────────────────────────── -->
+  <section id="screen-privacy" class="screen active" aria-label="Enter">
+
+    <div class="gate-bg"></div>
+    <div class="gate-bloom" id="gate-bloom"></div>
+
+    <div class="gate-wrap">
+      <div class="gate-mascots">
+        <img src="./assets/bear.png" alt="Bear mascot" class="gate-bear" />
+        <img src="./assets/squirrel.png" alt="Squirrel mascot" class="gate-squirrel" />
+      </div>
+
+      <div class="gate-card">
+        <div class="gate-badge">🎀 Est. 28 June 2024 🎀</div>
+        <h1 class="gate-title">For Shriyanshi</h1>
+        <p class="gate-question">What is our secret number? 🔒</p>
+        <form id="gate-form" class="gate-form" autocomplete="off">
+          <input
+            id="gate-input"
+            type="text"
+            class="gate-input"
+            placeholder="type it..."
+            inputmode="numeric"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Secret number"
+          />
+          <div id="gate-hint" class="gate-hint" role="alert" aria-live="polite"></div>
+          <button type="submit" class="gate-btn">Let me in 🐻💖</button>
+        </form>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SCREEN: DASHBOARD
+  ───────────────────────────────────────── -->
+  <section id="screen-dashboard" class="screen" aria-label="Home">
+
+    <!-- Hero photos -->
+    <div class="hero-bg" aria-hidden="true">
+      <img id="hero1" src="./assets/photos/hero/hero-1.jpg" alt="" class="hero-img active" />
+      <img id="hero2" src="./assets/photos/hero/hero-2.jpg" alt="" class="hero-img" />
+      <div class="hero-overlay"></div>
+    </div>
+
+    <canvas id="heart-canvas" aria-hidden="true"></canvas>
+
+    <!-- Mascots -->
+    <div class="dash-mascots">
+      <img src="./assets/bear.png" alt="Bear" class="dash-mascot bear" />
+      <span class="dash-mascot-heart">💖</span>
+      <img src="./assets/squirrel.png" alt="Squirrel" class="dash-mascot squirrel" />
+    </div>
+
+    <!-- Content -->
+    <div class="dash-content">
+      <div class="dash-badge">
+        <span class="badge-star">✦</span> 2nd Anniversary <span class="badge-star">✦</span>
+      </div>
+
+      <div class="dash-names">
+        <p class="names-sub">always &amp; forever 🌸</p>
+        <h2 class="names-main">
+          <span class="name-his">Dewansh</span>
+          <span class="names-amp">&amp;</span>
+          <span class="name-her">Shriyanshi</span>
+        </h2>
+        <p class="names-caption">Two years. A thousand small moments. One very big feeling. 🐻🐿️</p>
+      </div>
+
+      <!-- Countdown -->
+      <div class="countdown-box">
+        <p class="countdown-label">Until we see each other again</p>
+        <div class="countdown-grid" role="timer">
+          <div class="countdown-unit">
+            <div class="countdown-num" id="cd-days">00</div>
+            <div class="countdown-unit-label">Days</div>
+          </div>
+          <span class="countdown-colon">:</span>
+          <div class="countdown-unit">
+            <div class="countdown-num" id="cd-hours">00</div>
+            <div class="countdown-unit-label">Hours</div>
+          </div>
+          <span class="countdown-colon">:</span>
+          <div class="countdown-unit">
+            <div class="countdown-num" id="cd-mins">00</div>
+            <div class="countdown-unit-label">Mins</div>
+          </div>
+          <span class="countdown-colon">:</span>
+          <div class="countdown-unit">
+            <div class="countdown-num" id="cd-secs">00</div>
+            <div class="countdown-unit-label">Secs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Miss You -->
+      <div class="miss-wrap">
+        <button id="miss-btn" class="miss-btn" aria-label="I miss you">
+          I Miss You 🫀
+        </button>
+        <p id="miss-counter" class="miss-counter"></p>
+        <p id="miss-secret" class="miss-secret"></p>
+      </div>
+    </div>
+
+    <!-- Cassette Easter Egg -->
+    <button id="cassette-trigger" class="cassette-trigger" aria-label="Hidden surprise" title="...">📼</button>
+
+    <!-- Cassette Modal -->
+    <div id="cassette-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Cassette player">
+      <div class="cassette-player">
+        <button id="cassette-close" class="modal-close" aria-label="Close">✕</button>
+        <div class="cassette-body">
+          <div class="cassette-reel" id="reel-l"></div>
+          <div class="cassette-label-area">
+            <span class="cassette-label-text">Ehsaan Tera Hoga Mujh Par</span>
+          </div>
+          <div class="cassette-reel" id="reel-r"></div>
+          <div class="cassette-window"></div>
+        </div>
+        <p class="cassette-track">Ehsaan Tera Hoga Mujh Par</p>
+        <button id="cassette-play" class="cassette-play-btn" aria-label="Play/Pause">▶</button>
+        <audio id="cassette-audio" preload="none">
+          <source src="./assets/audio/ehsaan-tera.mp3" type="audio/mpeg" />
+        </audio>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SCREEN: TIMELINE — OUR STORY
+  ───────────────────────────────────────── -->
+  <section id="screen-timeline" class="screen" aria-label="Our Story">
+
+    <div class="section-header">
+      <p class="section-eyebrow">Two Years</p>
+      <h2 class="section-title">Our Story So Far</h2>
+      <p class="section-sub">Every chapter worth keeping</p>
+    </div>
+
+    <!-- Constellation -->
+    <div class="constellation-wrap">
+      <canvas id="constellation-canvas" aria-label="Weeks together constellation"></canvas>
+      <p id="constellation-caption" class="constellation-caption"></p>
+    </div>
+
+    <!-- Timeline entries -->
+    <div class="timeline-entries" id="timeline-entries" role="list"></div>
+
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SCREEN: EVENING WALK
+  ───────────────────────────────────────── -->
+  <section id="screen-evening" class="screen" aria-label="Evening Walk">
+
+    <div class="evening-atmo" aria-hidden="true">
+      <div class="dust-wrap" id="dust-wrap"></div>
+    </div>
+
+    <div class="section-header evening-hdr">
+      <p class="section-eyebrow">Step outside with me</p>
+      <h2 class="section-title">A Virtual Evening Walk</h2>
+      <p class="section-sub">press play · close your eyes · pretend we're together 🌙</p>
+    </div>
+
+    <!-- Audio Player -->
+    <div class="audio-player" id="audio-player">
+      <p class="audio-track" id="audio-track-name">Pal Pal Dil Ke Paas</p>
+      <p class="audio-artist">for you, always</p>
+
+      <div class="waveform" id="waveform" aria-hidden="true">
+        <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+        <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+        <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+        <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+        <div class="wbar"></div>
+      </div>
+
+      <div class="audio-controls">
+        <button id="audio-loop" class="audio-loop-btn active" title="Loop">🔁</button>
+        <button id="audio-play" class="audio-play-btn" aria-label="Play/Pause"><span id="audio-icon">▶</span></button>
+        <span style="width:36px"></span>
+      </div>
+
+      <div class="audio-progress-track" id="audio-progress-track" role="slider" aria-label="Audio progress">
+        <div class="audio-progress-fill" id="audio-progress-fill"></div>
+      </div>
+
+      <div class="audio-time">
+        <span id="audio-cur">0:00</span>
+        <span id="audio-dur">0:00</span>
+      </div>
+
+      <audio id="ambient-audio" preload="none" loop>
+        <source src="./assets/audio/pal-pal.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <!-- Polaroid Gallery -->
+    <div class="polaroid-gallery">
+      <div class="polaroid-grid" id="polaroid-grid"></div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="lightbox-inner">
+        <div class="lightbox-polaroid">
+          <img id="lb-img" src="" alt="" />
+        </div>
+        <p id="lb-caption" class="lb-caption"></p>
+        <button id="lb-close" class="modal-close" aria-label="Close">✕</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SCREEN: OPEN WHEN LETTERS
+  ───────────────────────────────────────── -->
+  <section id="screen-letters" class="screen" aria-label="Open When Letters">
+
+    <div class="section-header">
+      <p class="section-eyebrow">Letters</p>
+      <h2 class="section-title">Open When...</h2>
+      <p class="section-sub">Eight envelopes. Open each one when the moment finds you.</p>
+    </div>
+
+    <div class="envelope-grid" id="envelope-grid" role="list"></div>
+
+    <!-- Letter Modal -->
+    <div id="letter-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Open When letter">
+      <div class="letter-card">
+        <button id="letter-close" class="modal-close" aria-label="Close">✕</button>
+        <p class="letter-eyebrow" id="letter-eyebrow"></p>
+        <h3 class="letter-title" id="letter-title"></h3>
+        <div class="letter-divider"><span>❧</span></div>
+        <div class="letter-body" id="letter-body"></div>
+        <div class="letter-photo-wrap" id="letter-photo-wrap" style="display:none">
+          <img src="" alt="" /><p class="letter-photo-cap"></p>
+        </div>
+        <p class="letter-sig" id="letter-sig"></p>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /#app -->
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS (loaded in order, no defer needed for data)
+═══════════════════════════════════════════ -->
+<script src="./content/data.js"></script>
+<script src="./js/app.js"></script>
+
+</body>
+</html>

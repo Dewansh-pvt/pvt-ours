@@ -1,0 +1,840 @@
+/* ═══════════════════════════════════════════════════════════
+   APP.JS — Full Application Logic
+   Pure vanilla JS, zero library dependencies
+   ═══════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* ─── STATE ──────────────────────────────────────────── */
+  let currentScreen = 'privacy';
+  let missCount = parseInt(localStorage.getItem('missCount') || '0');
+  let cdInterval = null;
+  let heroInterval = null;
+  let heroActive = 1;
+
+  /* ─── HELPERS ────────────────────────────────────────── */
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function fmtTime(s) { if (isNaN(s)) return '0:00'; return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`; }
+
+  /* ─── FLOATING HEARTS ────────────────────────────────── */
+  function initHearts() {
+    const container = $('hearts-bg');
+    if (!container) return;
+    const emojis = ['💖','💛','🌸','⭐','💕','🌼','💗','✨','🎀','💝'];
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('span');
+      el.className = 'heart-float';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = `${Math.random() * 100}%`;
+      el.style.fontSize = `${Math.random() * 1.2 + 0.8}rem`;
+      el.style.animationDuration = `${Math.random() * 8 + 10}s`;
+      el.style.animationDelay = `${Math.random() * 10}s`;
+      container.appendChild(el);
+    }
+  }
+
+  /* ─── LOADING SCREEN ─────────────────────────────────── */
+  function hideLoader() {
+    const loader = $('loading-screen');
+    if (!loader) return;
+    setTimeout(() => {
+      loader.classList.add('fade-out');
+      setTimeout(() => { loader.style.display = 'none'; }, 750);
+    }, 1400);
+  }
+
+  /* ─── SCREEN NAVIGATION ──────────────────────────────── */
+  function showScreen(id, fromPrivacy) {
+    const screens = document.querySelectorAll('.screen');
+    const nav = $('nav');
+
+    screens.forEach(s => {
+      s.classList.remove('active');
+      s.style.display = '';
+    });
+
+    const target = $('screen-' + id);
+    if (!target) return;
+
+    target.style.display = id === 'privacy' ? 'flex' : 'block';
+    // Small timeout to allow display:block to register before opacity transition
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        target.classList.add('active');
+        target.scrollTop = 0;
+      });
+    });
+
+    currentScreen = id;
+
+    // Nav visibility
+    if (id === 'privacy') {
+      nav.classList.remove('visible');
+      nav.classList.add('hidden');
+    } else {
+      nav.classList.remove('hidden');
+      nav.classList.add('visible');
+    }
+
+    // Update nav active state
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.target === id);
+    });
+
+    // Screen-specific init
+    if (id === 'dashboard') onDashboardEnter();
+    if (id === 'timeline')  onTimelineEnter();
+    if (id === 'evening')   onEveningEnter();
+    if (id === 'letters')   onLettersEnter();
+  }
+
+  /* ─── NAV BINDINGS ───────────────────────────────────── */
+  function initNav() {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.target;
+        if (target && target !== currentScreen) showScreen(target);
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && currentScreen !== 'privacy' && currentScreen !== 'dashboard') {
+        showScreen('dashboard');
+      }
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     PRIVACY GATE
+  ═══════════════════════════════════════════════════════ */
+  function initGate() {
+    const form   = $('gate-form');
+    const input  = $('gate-input');
+    const hint   = $('gate-hint');
+    const bloom  = $('gate-bloom');
+
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = input.value.trim().toLowerCase();
+      const ans = CONFIG.privacyAnswer.trim().toLowerCase();
+
+      if (val === ans) {
+        // Correct!
+        input.disabled = true;
+        document.querySelector('.gate-btn').disabled = true;
+        bloom.classList.add('flash');
+        setTimeout(() => {
+          bloom.classList.remove('flash');
+          showScreen('dashboard', true);
+        }, 600);
+      } else {
+        // Wrong
+        input.classList.add('shake');
+        hint.textContent = "Hmm, that's not quite right... try again? 🌙";
+        input.addEventListener('animationend', () => { input.classList.remove('shake'); }, { once: true });
+        setTimeout(() => { input.value = ''; hint.textContent = ''; input.focus(); }, 500);
+      }
+    });
+
+    input.focus();
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     DASHBOARD
+  ═══════════════════════════════════════════════════════ */
+  function onDashboardEnter() {
+    initCountdown();
+    initHeroRotation();
+    initMissYouBtn();
+    initCassetteEgg();
+  }
+
+  /* Hero image rotation */
+  function initHeroRotation() {
+    if (heroInterval) return; // already running
+    const img1 = $('hero1');
+    const img2 = $('hero2');
+    if (!img1 || !img2) return;
+
+    heroInterval = setInterval(() => {
+      if (heroActive === 1) {
+        img1.classList.remove('active');
+        img2.classList.add('active');
+        heroActive = 2;
+      } else {
+        img2.classList.remove('active');
+        img1.classList.add('active');
+        heroActive = 1;
+      }
+    }, 7000);
+  }
+
+  /* Countdown */
+  function initCountdown() {
+    if (cdInterval) return;
+    updateCountdown();
+    cdInterval = setInterval(updateCountdown, 1000);
+  }
+
+  function updateCountdown() {
+    const now    = new Date();
+    const target = new Date(CONFIG.nextMeetingDate + 'T00:00:00');
+    const diff   = target - now;
+
+    if (diff <= 0) {
+      ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => { const el = $(id); if (el) el.textContent = '00'; });
+      const lbl = document.querySelector('.countdown-label');
+      if (lbl) lbl.textContent = '✨ Today is the day!';
+      clearInterval(cdInterval);
+      return;
+    }
+
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+
+    setUnit('cd-days',  days);
+    setUnit('cd-hours', hours);
+    setUnit('cd-mins',  mins);
+    setUnit('cd-secs',  secs);
+  }
+
+  let _prevVals = {};
+  function setUnit(id, val) {
+    const el = $(id);
+    if (!el) return;
+    const padded = pad(val);
+    if (el.textContent !== padded) {
+      el.textContent = padded;
+      if (_prevVals[id] !== undefined) {
+        el.classList.remove('pop');
+        void el.offsetWidth;
+        el.classList.add('pop');
+        el.addEventListener('animationend', () => el.classList.remove('pop'), { once: true });
+      }
+      _prevVals[id] = val;
+    }
+  }
+
+  /* Miss You Button */
+  let missCanvas, missCtx, missParticles = [], missRafId;
+
+  function initMissYouBtn() {
+    const btn     = $('miss-btn');
+    const counter = $('miss-counter');
+    const secret  = $('miss-secret');
+
+    if (!btn) return;
+
+    // Setup canvas for heart particles
+    missCanvas = $('heart-canvas');
+    if (missCanvas) {
+      missCanvas.width  = window.innerWidth;
+      missCanvas.height = window.innerHeight;
+      missCtx = missCanvas.getContext('2d');
+      window.addEventListener('resize', () => {
+        if (missCanvas) { missCanvas.width = window.innerWidth; missCanvas.height = window.innerHeight; }
+      });
+      animateParticles();
+    }
+
+    updateMissCounter(counter);
+
+    btn.addEventListener('click', () => {
+      missCount++;
+      localStorage.setItem('missCount', missCount);
+      updateMissCounter(counter);
+
+      btn.classList.remove('clicked');
+      void btn.offsetWidth;
+      btn.classList.add('clicked');
+      btn.addEventListener('animationend', () => btn.classList.remove('clicked'), { once: true });
+
+      const origText = btn.textContent;
+      btn.textContent = 'Me too, always 🫀';
+      setTimeout(() => { btn.textContent = origText; }, 1800);
+
+      spawnHearts(btn);
+
+      if (missCount % 10 === 0 && secret) {
+        const idx = Math.floor((missCount / 10 - 1) % CONFIG.secretMessages.length);
+        const msg = CONFIG.secretMessages[idx].replace('[N]', missCount);
+        secret.textContent = msg;
+        secret.classList.add('show');
+        setTimeout(() => secret.classList.remove('show'), 5000);
+      }
+    });
+  }
+
+  function updateMissCounter(el) {
+    if (!el) return;
+    if (missCount === 0)      el.textContent = '';
+    else if (missCount === 1) el.textContent = "You've missed me once today 🥺";
+    else                      el.textContent = `You've missed me ${missCount} times today`;
+  }
+
+  function spawnHearts(btn) {
+    if (!missCanvas) return;
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top  + rect.height / 2;
+    for (let i = 0; i < 18; i++) {
+      missParticles.push({
+        x: cx + (Math.random() - .5) * 80,
+        y: cy,
+        vx: (Math.random() - .5) * 5,
+        vy: -Math.random() * 6 - 3,
+        size: Math.random() * 16 + 8,
+        opacity: 1,
+        emoji: Math.random() > .4 ? '🤍' : (Math.random() > .5 ? '✨' : '💛'),
+        decay: Math.random() * .012 + .015,
+        spin: (Math.random() - .5) * .15,
+        angle: 0,
+      });
+    }
+  }
+
+  function animateParticles() {
+    const loop = () => {
+      if (!missCtx) { missRafId = requestAnimationFrame(loop); return; }
+      missCtx.clearRect(0, 0, missCanvas.width, missCanvas.height);
+      missParticles = missParticles.filter(p => p.opacity > 0);
+      missParticles.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += .08;
+        p.opacity -= p.decay; p.angle += p.spin;
+        missCtx.save();
+        missCtx.globalAlpha = Math.max(0, p.opacity);
+        missCtx.font = `${p.size}px serif`;
+        missCtx.translate(p.x, p.y);
+        missCtx.rotate(p.angle);
+        missCtx.fillText(p.emoji, -p.size / 2, p.size / 2);
+        missCtx.restore();
+      });
+      missRafId = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  /* Cassette Easter Egg */
+  function initCassetteEgg() {
+    const trigger = $('cassette-trigger');
+    const modal   = $('cassette-modal');
+    const closeBtn= $('cassette-close');
+    const playBtn = $('cassette-play');
+    const audio   = $('cassette-audio');
+    const reelL   = $('reel-l');
+    const reelR   = $('reel-r');
+
+    if (!trigger || !modal) return;
+
+    let playing = false;
+
+    trigger.addEventListener('click', () => modal.classList.add('open'));
+
+    const closeModal = () => {
+      modal.classList.remove('open');
+      if (playing && audio) { audio.pause(); audio.currentTime = 0; playing = false; updateCassetteIcon(); }
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+    const updateCassetteIcon = () => {
+      if (playBtn) playBtn.textContent = playing ? '⏸' : '▶';
+      [reelL, reelR].forEach(r => { if (r) r.classList.toggle('spinning', playing); });
+    };
+
+    if (playBtn && audio) {
+      playBtn.addEventListener('click', () => {
+        if (playing) { audio.pause(); playing = false; }
+        else { audio.play().catch(() => {}); playing = true; }
+        updateCassetteIcon();
+      });
+      audio.addEventListener('ended', () => { playing = false; updateCassetteIcon(); });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     TIMELINE
+  ═══════════════════════════════════════════════════════ */
+  let timelineBuilt = false;
+
+  function onTimelineEnter() {
+    if (!timelineBuilt) {
+      buildTimeline();
+      buildConstellation();
+      timelineBuilt = true;
+    }
+  }
+
+  function buildTimeline() {
+    const container = $('timeline-entries');
+    if (!container) return;
+
+    let mediaIndex = 0;
+
+    TIMELINE_DATA.forEach(item => {
+      // Chapter label
+      if (item.chapterLabel) {
+        const ch = document.createElement('div');
+        ch.className = 'chapter-label';
+        ch.innerHTML = `<span>${item.chapterLabel}</span>`;
+        container.appendChild(ch);
+      }
+
+      // Text-only cards
+      if (item.isTextOnly || item.isAnniversary) {
+        const tc = document.createElement('div');
+        tc.className = `text-card${item.isAnniversary ? ' anniversary-card' : ''}`;
+        tc.setAttribute('role', 'listitem');
+        tc.innerHTML = `
+          <div class="text-card-icon">${item.specialIcon || '●'}</div>
+          <div class="text-card-date">${item.date}</div>
+          <h3 class="text-card-title">${item.title}${item.isLast ? ' 🤍' : ''}</h3>
+          <p class="text-card-caption">${item.caption}</p>
+        `;
+        container.appendChild(tc);
+        return;
+      }
+
+      // Media cards (alternate left/right)
+      const isLeft = mediaIndex % 2 === 0;
+      mediaIndex++;
+
+      const card = document.createElement('div');
+      card.className = `tl-card ${isLeft ? 'left' : 'right'}${item.isFuture ? ' future-card' : ''}`;
+      card.setAttribute('role', 'listitem');
+
+      // Photo/Video element
+      const photoDiv = document.createElement('div');
+      photoDiv.className = 'card-photo';
+
+      const polaroid = document.createElement('div');
+      polaroid.className = 'polaroid-wrap';
+      polaroid.style.position = 'relative';
+
+      if (item.isVideo && item.video) {
+        const vid = document.createElement('video');
+        vid.className = 'polaroid-img';
+        vid.src = item.video;
+        vid.muted = true; vid.loop = true; vid.playsInline = true; vid.preload = 'metadata';
+        polaroid.appendChild(vid);
+
+        const badge = document.createElement('div');
+        badge.className = 'video-badge'; badge.textContent = '▶';
+        polaroid.appendChild(badge);
+
+        polaroid.addEventListener('mouseenter', () => vid.play().catch(() => {}));
+        polaroid.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+
+      } else if (item.photo) {
+        const img = document.createElement('img');
+        img.className = 'polaroid-img';
+        img.src = item.photo; img.alt = item.title; img.loading = 'lazy';
+        polaroid.appendChild(img);
+      } else {
+        const ph = document.createElement('div');
+        ph.className = 'polaroid-placeholder';
+        ph.textContent = item.isFuture ? '🌏' : '📷';
+        polaroid.appendChild(ph);
+      }
+
+      const cap = document.createElement('div');
+      cap.className = 'polaroid-cap';
+      cap.textContent = item.polaroidCaption || '';
+      polaroid.appendChild(cap);
+      photoDiv.appendChild(polaroid);
+
+      // Center dot
+      const centerDiv = document.createElement('div');
+      centerDiv.className = 'card-center';
+      const dot = document.createElement('div');
+      dot.className = 'center-dot';
+      centerDiv.appendChild(dot);
+
+      // Text
+      const textDiv = document.createElement('div');
+      textDiv.className = 'card-text';
+
+      let titleHTML = item.title;
+      if (item.isLast) titleHTML += ' 🤍';
+      if (item.isFuture) titleHTML += ' <span class="future-dot">●</span>';
+
+      textDiv.innerHTML = `
+        <div class="card-date">${item.date}</div>
+        <h3 class="card-title">${titleHTML}</h3>
+        <p class="card-caption">${item.caption}</p>
+      `;
+
+      card.appendChild(photoDiv);
+      card.appendChild(centerDiv);
+      card.appendChild(textDiv);
+      container.appendChild(card);
+
+      // Intersection observer for scroll-in animation
+      if ('IntersectionObserver' in window) {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(40px)';
+        card.style.transition = 'opacity .7s ease, transform .7s ease';
+
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(en => {
+            if (en.isIntersecting) {
+              en.target.style.opacity = '1';
+              en.target.style.transform = 'none';
+              obs.unobserve(en.target);
+            }
+          });
+        }, { threshold: .15 });
+        obs.observe(card);
+      }
+    });
+  }
+
+  function buildConstellation() {
+    const canvas = $('constellation-canvas');
+    if (!canvas) return;
+
+    const start = new Date(CONFIG.anniversaryDate);
+    const now   = new Date();
+    const totalWeeks = Math.floor((now - start) / 604800000);
+    if (totalWeeks <= 0) return;
+
+    const W = Math.min(window.innerWidth - 64, 620);
+    const H = 180;
+    canvas.width = W; canvas.height = H;
+
+    const ctx = canvas.getContext('2d');
+    const stars = [];
+    const cols  = Math.ceil(Math.sqrt(totalWeeks * (W / H)));
+
+    for (let i = 0; i < totalWeeks; i++) {
+      const progress = i / totalWeeks;
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const totalRows = Math.ceil(totalWeeks / cols);
+      const x = 20 + col * ((W - 40) / Math.max(cols - 1, 1));
+      const y = 28 + (row / Math.max(totalRows - 1, 1)) * (H - 56) +
+                Math.sin(progress * Math.PI * 3.5) * 18 + (Math.random() - .5) * 8;
+
+      stars.push({
+        x: Math.max(8, Math.min(W - 8, x)),
+        y: Math.max(8, Math.min(H - 8, y)),
+        r: Math.random() * 1.4 + 0.6,
+        opacity: Math.random() * .4 + .55,
+        week: i + 1,
+        isPulse: i >= totalWeeks - 6,
+        isNewest: i === totalWeeks - 1,
+      });
+    }
+
+    const caption = $('constellation-caption');
+    if (caption) caption.textContent = `${totalWeeks} weeks of us — each star is one ✨`;
+
+    let hoveredStar = null;
+    let pulsePhase  = 0;
+    let raf;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#0d0a06'; ctx.fillRect(0, 0, W, H);
+
+      ctx.beginPath();
+      stars.forEach((s, i) => { if (i === 0) ctx.moveTo(s.x, s.y); else ctx.lineTo(s.x, s.y); });
+      ctx.strokeStyle = 'rgba(200,169,126,.1)'; ctx.lineWidth = .7; ctx.stroke();
+
+      pulsePhase += .04;
+
+      stars.forEach(s => {
+        const isHov = hoveredStar === s;
+        let r = s.r, a = s.opacity;
+        if (s.isPulse) { r = s.r + Math.sin(pulsePhase) * .9; a = s.opacity * (.65 + Math.sin(pulsePhase) * .35); }
+        if (isHov) { r = s.r * 2.8; a = 1; }
+
+        if (s.isPulse) {
+          const grd = ctx.createRadialGradient(s.x, s.y, r, s.x, s.y, r * 4);
+          grd.addColorStop(0, 'rgba(212,168,67,.2)'); grd.addColorStop(1, 'transparent');
+          ctx.beginPath(); ctx.arc(s.x, s.y, r * 4, 0, Math.PI * 2);
+          ctx.fillStyle = grd; ctx.fill();
+        }
+
+        ctx.beginPath(); ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = isHov ? '#fdf6e3' : s.isPulse ? `rgba(212,168,67,${a})` : `rgba(245,236,215,${a})`;
+        ctx.fill();
+      });
+
+      if (hoveredStar) {
+        const s = hoveredStar, label = `Week ${s.week} together ✨`;
+        ctx.font = '11px Nunito, sans-serif';
+        const tw = ctx.measureText(label).width;
+        const tx = Math.min(Math.max(s.x - tw / 2, 4), W - tw - 4);
+        const ty = s.y > H / 2 ? s.y - 16 : s.y + 20;
+        ctx.fillStyle = 'rgba(13,10,6,.9)'; ctx.fillRect(tx - 5, ty - 14, tw + 10, 20);
+        ctx.fillStyle = 'rgba(200,169,126,.95)'; ctx.fillText(label, tx, ty);
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (W / rect.width);
+      const my = (e.clientY - rect.top)  * (H / rect.height);
+      hoveredStar = stars.find(s => Math.hypot(s.x - mx, s.y - my) < 10) || null;
+      canvas.style.cursor = hoveredStar ? 'pointer' : 'crosshair';
+    });
+    canvas.addEventListener('mouseleave', () => { hoveredStar = null; });
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     EVENING WALK
+  ═══════════════════════════════════════════════════════ */
+  let eveningBuilt = false;
+  let audioPlayer, audioEl, isPlaying = false;
+
+  function onEveningEnter() {
+    if (!eveningBuilt) {
+      buildPolaroidGallery();
+      initDustMotes();
+      eveningBuilt = true;
+    }
+    initAudioPlayer();
+  }
+
+  function initDustMotes() {
+    const wrap = $('dust-wrap');
+    if (!wrap) return;
+    for (let i = 0; i < 20; i++) {
+      const m = document.createElement('div');
+      m.className = 'dust-mote';
+      m.style.left = `${Math.random() * 100}%`;
+      m.style.setProperty('--drift-x', `${(Math.random() - .5) * 60}px`);
+      m.style.animationDuration = `${8 + Math.random() * 12}s`;
+      m.style.animationDelay = `-${Math.random() * 14}s`;
+      m.style.opacity = String(Math.random() * .4 + .1);
+      wrap.appendChild(m);
+    }
+  }
+
+  function initAudioPlayer() {
+    audioEl = $('ambient-audio');
+    const playBtn      = $('audio-play');
+    const icon         = $('audio-icon');
+    const loopBtn      = $('audio-loop');
+    const fill         = $('audio-progress-fill');
+    const track        = $('audio-progress-track');
+    const cur          = $('audio-cur');
+    const dur          = $('audio-dur');
+    const waveform     = $('waveform');
+    const wbars        = document.querySelectorAll('.wbar');
+
+    if (!audioEl || !playBtn) return;
+
+    // Waveform bar heights
+    const heights = [30, 60, 90, 50, 75, 40, 85, 55, 70, 35, 65, 80, 45];
+    wbars.forEach((b, i) => {
+      b.style.height = `${heights[i % heights.length]}%`;
+      b.style.setProperty('--wave-dur', `${.5 + (i % 4) * .15}s`);
+      b.style.setProperty('--wave-delay', `${(i % 5) * .1}s`);
+    });
+
+    const updateUI = () => {
+      icon.textContent = isPlaying ? '⏸' : '▶';
+      wbars.forEach(b => b.classList.toggle('active', isPlaying));
+      if ($('audio-player')) $('audio-player').classList.toggle('is-playing', isPlaying);
+    };
+
+    playBtn.addEventListener('click', () => {
+      if (audioEl.paused) {
+        audioEl.play().then(() => { isPlaying = true; updateUI(); }).catch(() => {});
+      } else {
+        audioEl.pause(); isPlaying = false; updateUI();
+      }
+    });
+
+    if (loopBtn) {
+      audioEl.loop = true; loopBtn.classList.add('active');
+      loopBtn.addEventListener('click', () => {
+        audioEl.loop = !audioEl.loop;
+        loopBtn.classList.toggle('active', audioEl.loop);
+      });
+    }
+
+    audioEl.addEventListener('timeupdate', () => {
+      if (!audioEl.duration) return;
+      const pct = (audioEl.currentTime / audioEl.duration) * 100;
+      if (fill) fill.style.width = pct + '%';
+      if (cur) cur.textContent = fmtTime(audioEl.currentTime);
+    });
+
+    audioEl.addEventListener('loadedmetadata', () => { if (dur) dur.textContent = fmtTime(audioEl.duration); });
+
+    if (track) {
+      track.addEventListener('click', (e) => {
+        const rect = track.getBoundingClientRect();
+        const ratio = (e.clientX - rect.left) / rect.width;
+        if (audioEl.duration) audioEl.currentTime = ratio * audioEl.duration;
+      });
+    }
+
+    // Pause when leaving
+    document.addEventListener('keydown', (e) => {
+      if (currentScreen !== 'evening' && !audioEl.paused) { audioEl.pause(); isPlaying = false; updateUI(); }
+    });
+  }
+
+  function buildPolaroidGallery() {
+    const grid = $('polaroid-grid');
+    if (!grid) return;
+
+    const tilts = [-3, 2, -1.5, 3, -2, 2.5];
+
+    EVENING_PHOTOS.forEach((photo, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'evening-polaroid';
+      wrap.style.setProperty('--tilt', `${tilts[i % tilts.length]}deg`);
+
+      let imgEl;
+      if (photo.src) {
+        imgEl = document.createElement('img');
+        imgEl.className = 'evening-polaroid-img';
+        imgEl.src = photo.src; imgEl.alt = photo.caption; imgEl.loading = 'lazy';
+      } else {
+        imgEl = document.createElement('div');
+        imgEl.className = 'evening-polaroid-placeholder';
+        imgEl.textContent = '📷';
+      }
+
+      const cap = document.createElement('div');
+      cap.className = 'evening-polaroid-cap';
+      cap.textContent = photo.caption;
+
+      wrap.appendChild(imgEl);
+      wrap.appendChild(cap);
+      grid.appendChild(wrap);
+
+      wrap.addEventListener('click', () => openLightbox(photo));
+    });
+  }
+
+  function openLightbox(photo) {
+    const lb     = $('lightbox');
+    const lbImg  = $('lb-img');
+    const lbCap  = $('lb-caption');
+    const lbClose= $('lb-close');
+
+    if (!lb) return;
+    if (lbImg) { if (photo.src) { lbImg.src = photo.src; lbImg.style.display = 'block'; } else { lbImg.style.display = 'none'; } }
+    if (lbCap) lbCap.textContent = photo.caption;
+
+    lb.classList.add('open');
+
+    const close = () => lb.classList.remove('open');
+    if (lbClose) lbClose.addEventListener('click', close, { once: true });
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); }, { once: true });
+    document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); } });
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     OPEN WHEN LETTERS
+  ═══════════════════════════════════════════════════════ */
+  let lettersBuilt = false;
+
+  function onLettersEnter() {
+    if (!lettersBuilt) {
+      buildLetterGrid();
+      lettersBuilt = true;
+    }
+  }
+
+  function buildLetterGrid() {
+    const grid = $('envelope-grid');
+    if (!grid) return;
+
+    OPEN_WHEN_LETTERS.forEach((letter, i) => {
+      const card = document.createElement('div');
+      card.className = `envelope-card${letter.isSpecial ? ' special' : ''}`;
+      card.style.setProperty('--card-accent', letter.accentColor || 'var(--pink)');
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `${letter.label} ${letter.sublabel}`);
+
+      card.innerHTML = `
+        <div class="envelope-flap"></div>
+        <span class="wax-seal">${letter.seal}</span>
+        <div class="env-label">${letter.label}</div>
+        <div class="env-sublabel">${letter.sublabel}</div>
+        <div class="env-cta">click to open ↗</div>
+      `;
+
+      card.addEventListener('click', () => openLetter(letter));
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLetter(letter); } });
+      grid.appendChild(card);
+    });
+
+    // Modal setup
+    const modal    = $('letter-modal');
+    const closeBtn = $('letter-close');
+    if (closeBtn) closeBtn.addEventListener('click', () => modal && modal.classList.remove('open'));
+    if (modal) {
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) modal.classList.remove('open'); });
+    }
+  }
+
+  function openLetter(letterData) {
+    const modal    = $('letter-modal');
+    const eyebrow  = $('letter-eyebrow');
+    const title    = $('letter-title');
+    const body     = $('letter-body');
+    const sig      = $('letter-sig');
+    const photoWrap= $('letter-photo-wrap');
+
+    if (!modal) return;
+    const l = letterData.letter;
+
+    if (eyebrow) eyebrow.textContent  = l.eyebrow || '';
+    if (title)   title.textContent    = l.title   || '';
+    if (body)    body.innerHTML       = l.body     || '';
+    if (sig)     sig.textContent      = l.signature|| '';
+
+    if (photoWrap) {
+      if (l.photo) {
+        photoWrap.style.display = 'block';
+        const img = photoWrap.querySelector('img');
+        const cap = photoWrap.querySelector('.letter-photo-cap');
+        if (img) { img.src = l.photo; img.alt = l.title; }
+        if (cap && l.photoCaption) cap.textContent = l.photoCaption;
+      } else { photoWrap.style.display = 'none'; }
+    }
+
+    // scroll to top
+    const lc = modal.querySelector('.letter-card');
+    if (lc) lc.scrollTop = 0;
+
+    modal.classList.add('open');
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     BOOT
+  ═══════════════════════════════════════════════════════ */
+  function init() {
+    initHearts();
+    initNav();
+    initGate();
+    hideLoader();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
