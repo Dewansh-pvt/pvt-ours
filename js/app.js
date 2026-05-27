@@ -175,6 +175,95 @@
     initMissYouBtn();
     initCassetteEgg();
     initStickerModal();
+    initStatsCounter();
+  }
+
+  /* Animated Stats Counter */
+  let statsInitialized = false;
+  function initStatsCounter() {
+    if (statsInitialized) return;
+    const card = $('our-stats-card');
+    if (!card) return;
+
+    // Compute real days & weeks from anniversary date
+    const start = new Date(CONFIG.anniversaryDate);
+    const now = new Date();
+    const realDays = Math.floor((now - start) / 86400000);
+    const realWeeks = Math.floor(realDays / 7);
+
+    // Update data-target attributes with real values
+    const statNumbers = card.querySelectorAll('.stat-number');
+    statNumbers.forEach(el => {
+      if (el.closest('.stat-item').querySelector('.stat-label').textContent.includes('days')) {
+        el.setAttribute('data-target', realDays);
+      }
+      if (el.closest('.stat-item').querySelector('.stat-label').textContent.includes('weeks')) {
+        el.setAttribute('data-target', realWeeks);
+      }
+    });
+
+    const animateCounter = (el) => {
+      const isInfinity = el.getAttribute('data-is-infinity') === 'true';
+      const suffix = el.getAttribute('data-suffix') || '';
+
+      if (isInfinity) {
+        el.textContent = '∞';
+        return;
+      }
+
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      const duration = Math.min(2000, Math.max(800, target * 3));
+      const startTime = performance.now();
+
+      const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+      const update = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutQuart(progress);
+        const current = Math.floor(easedProgress * target);
+
+        el.textContent = current.toLocaleString() + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = target.toLocaleString() + suffix;
+        }
+      };
+
+      requestAnimationFrame(update);
+    };
+
+    const statItems = card.querySelectorAll('.stat-item');
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !statsInitialized) {
+            statsInitialized = true;
+            statItems.forEach((item, i) => {
+              setTimeout(() => {
+                item.style.transition = 'opacity .6s var(--ease-smooth), transform .6s var(--ease-smooth)';
+                item.classList.add('visible');
+                const numEl = item.querySelector('.stat-number');
+                if (numEl) animateCounter(numEl);
+              }, i * 150);
+            });
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+      observer.observe(card);
+    } else {
+      // Fallback: just show them immediately
+      statsInitialized = true;
+      statItems.forEach(item => {
+        item.classList.add('visible');
+        const numEl = item.querySelector('.stat-number');
+        if (numEl) animateCounter(numEl);
+      });
+    }
   }
 
   /* Hero image rotation */
