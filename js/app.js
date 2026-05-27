@@ -8,16 +8,18 @@
   /* ─── STATE ──────────────────────────────────────────── */
   let currentScreen = 'privacy';
   let missCount = parseInt(localStorage.getItem('missCount') || '0');
-  let cdInterval = null;
   let heroInterval = null;
   let heroActive = 1;
 
+  // Track quick taps for Miss You cuddle egg
+  let lastTapTime = 0;
+  let quickTapCount = 0;
+
   /* ─── HELPERS ────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
-  function pad(n) { return String(n).padStart(2, '0'); }
   function fmtTime(s) { if (isNaN(s)) return '0:00'; return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`; }
 
-  /* ─── FLOATING HEARTS ────────────────────────────────── */
+  /* ─── FLOATING HEARTS (Home Screen Background) ───────── */
   function initHearts() {
     const container = $('hearts-bg');
     if (!container) return;
@@ -30,6 +32,24 @@
       el.style.fontSize = `${Math.random() * 1.2 + 0.8}rem`;
       el.style.animationDuration = `${Math.random() * 8 + 10}s`;
       el.style.animationDelay = `${Math.random() * 10}s`;
+      container.appendChild(el);
+    }
+  }
+
+  /* ─── TIMELINE FLOATING STARS AND HEARTS BACKGROUND ─── */
+  function initTimelineBg() {
+    const container = $('timeline-ambient-bg');
+    if (!container) return;
+    container.innerHTML = ''; // Clear existing
+    const elements = ['✨', '⭐', '💖', '💛', '💗', '🌸'];
+    for (let i = 0; i < 22; i++) {
+      const el = document.createElement('span');
+      el.className = 'timeline-particle';
+      el.textContent = elements[Math.floor(Math.random() * elements.length)];
+      el.style.left = `${Math.random() * 100}%`;
+      el.style.fontSize = `${Math.random() * 1.5 + 0.8}rem`;
+      el.style.animationDuration = `${Math.random() * 10 + 8}s`;
+      el.style.animationDelay = `-${Math.random() * 10}s`;
       container.appendChild(el);
     }
   }
@@ -58,7 +78,6 @@
     if (!target) return;
 
     target.style.display = id === 'privacy' ? 'flex' : 'block';
-    // Small timeout to allow display:block to register before opacity transition
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         target.classList.add('active');
@@ -122,7 +141,6 @@
       const ans = CONFIG.privacyAnswer.trim().toLowerCase();
 
       if (val === ans) {
-        // Correct!
         input.disabled = true;
         document.querySelector('.gate-btn').disabled = true;
         bloom.classList.add('flash');
@@ -131,7 +149,6 @@
           showScreen('dashboard', true);
         }, 600);
       } else {
-        // Wrong
         input.classList.add('shake');
         hint.textContent = "Hmm, that's not quite right... try again? 🌙";
         input.addEventListener('animationend', () => { input.classList.remove('shake'); }, { once: true });
@@ -146,15 +163,15 @@
      DASHBOARD
   ═══════════════════════════════════════════════════════ */
   function onDashboardEnter() {
-    initCountdown();
     initHeroRotation();
     initMissYouBtn();
     initCassetteEgg();
+    initStickerModal();
   }
 
   /* Hero image rotation */
   function initHeroRotation() {
-    if (heroInterval) return; // already running
+    if (heroInterval) return;
     const img1 = $('hero1');
     const img2 = $('hero2');
     if (!img1 || !img2) return;
@@ -172,55 +189,7 @@
     }, 7000);
   }
 
-  /* Countdown */
-  function initCountdown() {
-    if (cdInterval) return;
-    updateCountdown();
-    cdInterval = setInterval(updateCountdown, 1000);
-  }
-
-  function updateCountdown() {
-    const now    = new Date();
-    const target = new Date(CONFIG.nextMeetingDate + 'T00:00:00');
-    const diff   = target - now;
-
-    if (diff <= 0) {
-      ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => { const el = $(id); if (el) el.textContent = '00'; });
-      const lbl = document.querySelector('.countdown-label');
-      if (lbl) lbl.textContent = '✨ Today is the day!';
-      clearInterval(cdInterval);
-      return;
-    }
-
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000) / 60000);
-    const secs  = Math.floor((diff % 60000) / 1000);
-
-    setUnit('cd-days',  days);
-    setUnit('cd-hours', hours);
-    setUnit('cd-mins',  mins);
-    setUnit('cd-secs',  secs);
-  }
-
-  let _prevVals = {};
-  function setUnit(id, val) {
-    const el = $(id);
-    if (!el) return;
-    const padded = pad(val);
-    if (el.textContent !== padded) {
-      el.textContent = padded;
-      if (_prevVals[id] !== undefined) {
-        el.classList.remove('pop');
-        void el.offsetWidth;
-        el.classList.add('pop');
-        el.addEventListener('animationend', () => el.classList.remove('pop'), { once: true });
-      }
-      _prevVals[id] = val;
-    }
-  }
-
-  /* Miss You Button */
+  /* Miss You Button with Cuddle Egg */
   let missCanvas, missCtx, missParticles = [], missRafId;
 
   function initMissYouBtn() {
@@ -245,6 +214,7 @@
     updateMissCounter(counter);
 
     btn.addEventListener('click', () => {
+      const now = Date.now();
       missCount++;
       localStorage.setItem('missCount', missCount);
       updateMissCounter(counter);
@@ -259,6 +229,20 @@
       setTimeout(() => { btn.textContent = origText; }, 1800);
 
       spawnHearts(btn);
+
+      // Track rapid taps for Cuddle Egg popup modal
+      if (now - lastTapTime < 600) {
+        quickTapCount++;
+      } else {
+        quickTapCount = 1;
+      }
+      lastTapTime = now;
+
+      if (quickTapCount >= 10) {
+        quickTapCount = 0; // reset
+        const stickerModal = $('sticker-modal');
+        if (stickerModal) stickerModal.classList.add('open');
+      }
 
       if (missCount % 10 === 0 && secret) {
         const idx = Math.floor((missCount / 10 - 1) % CONFIG.secretMessages.length);
@@ -359,12 +343,24 @@
     }
   }
 
+  /* Cuddle Sticker Egg Modal */
+  function initStickerModal() {
+    const modal = $('sticker-modal');
+    const closeBtn = $('sticker-close');
+    if (!modal) return;
+    const closeModal = () => modal.classList.remove('open');
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+  }
+
   /* ═══════════════════════════════════════════════════════
      TIMELINE
   ═══════════════════════════════════════════════════════ */
   let timelineBuilt = false;
 
   function onTimelineEnter() {
+    initTimelineBg();
     if (!timelineBuilt) {
       buildTimeline();
       buildConstellation();
@@ -379,7 +375,6 @@
     let mediaIndex = 0;
 
     TIMELINE_DATA.forEach(item => {
-      // Chapter label
       if (item.chapterLabel) {
         const ch = document.createElement('div');
         ch.className = 'chapter-label';
@@ -387,7 +382,6 @@
         container.appendChild(ch);
       }
 
-      // Text-only cards
       if (item.isTextOnly || item.isAnniversary) {
         const tc = document.createElement('div');
         tc.className = `text-card${item.isAnniversary ? ' anniversary-card' : ''}`;
@@ -402,7 +396,6 @@
         return;
       }
 
-      // Media cards (alternate left/right)
       const isLeft = mediaIndex % 2 === 0;
       mediaIndex++;
 
@@ -410,7 +403,6 @@
       card.className = `tl-card ${isLeft ? 'left' : 'right'}${item.isFuture ? ' future-card' : ''}`;
       card.setAttribute('role', 'listitem');
 
-      // Photo/Video element
       const photoDiv = document.createElement('div');
       photoDiv.className = 'card-photo';
 
@@ -450,14 +442,12 @@
       polaroid.appendChild(cap);
       photoDiv.appendChild(polaroid);
 
-      // Center dot
       const centerDiv = document.createElement('div');
       centerDiv.className = 'card-center';
       const dot = document.createElement('div');
       dot.className = 'center-dot';
       centerDiv.appendChild(dot);
 
-      // Text
       const textDiv = document.createElement('div');
       textDiv.className = 'card-text';
 
@@ -476,7 +466,6 @@
       card.appendChild(textDiv);
       container.appendChild(card);
 
-      // Intersection observer for scroll-in animation
       if ('IntersectionObserver' in window) {
         card.style.opacity = '0';
         card.style.transform = 'translateY(40px)';
@@ -631,12 +620,10 @@
     const track        = $('audio-progress-track');
     const cur          = $('audio-cur');
     const dur          = $('audio-dur');
-    const waveform     = $('waveform');
     const wbars        = document.querySelectorAll('.wbar');
 
     if (!audioEl || !playBtn) return;
 
-    // Waveform bar heights
     const heights = [30, 60, 90, 50, 75, 40, 85, 55, 70, 35, 65, 80, 45];
     wbars.forEach((b, i) => {
       b.style.height = `${heights[i % heights.length]}%`;
@@ -683,7 +670,6 @@
       });
     }
 
-    // Pause when leaving
     document.addEventListener('keydown', (e) => {
       if (currentScreen !== 'evening' && !audioEl.paused) { audioEl.pause(); isPlaying = false; updateUI(); }
     });
@@ -778,7 +764,6 @@
       grid.appendChild(card);
     });
 
-    // Modal setup
     const modal    = $('letter-modal');
     const closeBtn = $('letter-close');
     if (closeBtn) closeBtn.addEventListener('click', () => modal && modal.classList.remove('open'));
@@ -814,7 +799,6 @@
       } else { photoWrap.style.display = 'none'; }
     }
 
-    // scroll to top
     const lc = modal.querySelector('.letter-card');
     if (lc) lc.scrollTop = 0;
 

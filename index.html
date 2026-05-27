@@ -22,9 +22,9 @@
 ═══════════════════════════════════════════ -->
 <div id="loading-screen">
   <div class="loader-mascots">
-    <img src="./assets/bear.png" alt="Bear" class="loader-bear" />
+    <img src="./assets/bear_trim.png" alt="Bear" class="loader-bear" />
     <div class="loader-hearts">💖💛💖</div>
-    <img src="./assets/squirrel.png" alt="Squirrel" class="loader-squirrel" />
+    <img src="./assets/squirrel_trim.png" alt="Squirrel" class="loader-squirrel" />
   </div>
   <p class="loader-text">Loading something special...</p>
 </div>
@@ -64,8 +64,8 @@
 
     <div class="gate-wrap">
       <div class="gate-mascots">
-        <img src="./assets/bear.png" alt="Bear mascot" class="gate-bear" />
-        <img src="./assets/squirrel.png" alt="Squirrel mascot" class="gate-squirrel" />
+        <img src="./assets/bear_trim.png" alt="Bear mascot" class="gate-bear" />
+        <img src="./assets/squirrel_trim.png" alt="Squirrel mascot" class="gate-squirrel" />
       </div>
 
       <div class="gate-card">
@@ -107,9 +107,9 @@
 
     <!-- Mascots -->
     <div class="dash-mascots">
-      <img src="./assets/bear.png" alt="Bear" class="dash-mascot bear" />
+      <img src="./assets/bear_trim.png" alt="Bear" class="dash-mascot bear" />
       <span class="dash-mascot-heart">💖</span>
-      <img src="./assets/squirrel.png" alt="Squirrel" class="dash-mascot squirrel" />
+      <img src="./assets/squirrel_trim.png" alt="Squirrel" class="dash-mascot squirrel" />
     </div>
 
     <!-- Content -->
@@ -128,30 +128,15 @@
         <p class="names-caption">Two years. A thousand small moments. One very big feeling. 🐻🐿️</p>
       </div>
 
-      <!-- Countdown -->
-      <div class="countdown-box">
-        <p class="countdown-label">Until we see each other again</p>
-        <div class="countdown-grid" role="timer">
-          <div class="countdown-unit">
-            <div class="countdown-num" id="cd-days">00</div>
-            <div class="countdown-unit-label">Days</div>
-          </div>
-          <span class="countdown-colon">:</span>
-          <div class="countdown-unit">
-            <div class="countdown-num" id="cd-hours">00</div>
-            <div class="countdown-unit-label">Hours</div>
-          </div>
-          <span class="countdown-colon">:</span>
-          <div class="countdown-unit">
-            <div class="countdown-num" id="cd-mins">00</div>
-            <div class="countdown-unit-label">Mins</div>
-          </div>
-          <span class="countdown-colon">:</span>
-          <div class="countdown-unit">
-            <div class="countdown-num" id="cd-secs">00</div>
-            <div class="countdown-unit-label">Secs</div>
-          </div>
-        </div>
+      <!-- We'll meet soon message instead of countdown timer -->
+      <div class="meet-soon-box">
+        <p class="meet-soon-text">We'll meet very soon! 🥺❤️✨</p>
+      </div>
+
+      <!-- Constellation sky photo map showing 99 stars -->
+      <div class="framed-sky-map">
+        <img src="./assets/sky_constellation.png" alt="99 weeks together constellation" class="sky-map-img" />
+        <p class="sky-map-caption">99 Weeks of Us — under the same beautiful sky 🌌✨</p>
       </div>
 
       <!-- Miss You -->
@@ -193,6 +178,9 @@
        SCREEN: TIMELINE — OUR STORY
   ───────────────────────────────────────── -->
   <section id="screen-timeline" class="screen" aria-label="Our Story">
+
+    <!-- Floating Background Effects container -->
+    <div id="timeline-ambient-bg" aria-hidden="true"></div>
 
     <div class="section-header">
       <p class="section-eyebrow">Two Years</p>
@@ -306,6 +294,15 @@
     </div>
 
   </section>
+
+  <!-- Cute sticker rapid taps popup modal -->
+  <div id="sticker-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="sticker-card">
+      <button id="sticker-close" class="modal-close" aria-label="Close">✕</button>
+      <img src="./assets/sticker.png" alt="Bear hug cuddle sticker" class="sticker-img" />
+      <h3 class="sticker-text">Calm down baby 🥺💖<br>Bear is here!</h3>
+    </div>
+  </div>
 
 </div><!-- /#app -->
 
