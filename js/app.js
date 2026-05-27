@@ -14,6 +14,7 @@
   // Track quick taps for Miss You cuddle egg
   let lastTapTime = 0;
   let quickTapCount = 0;
+  let isLoopRunning = false;
 
   /* ─── HELPERS ────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
@@ -208,7 +209,6 @@
       window.addEventListener('resize', () => {
         if (missCanvas) { missCanvas.width = window.innerWidth; missCanvas.height = window.innerHeight; }
       });
-      animateParticles();
     }
 
     updateMissCounter(counter);
@@ -266,24 +266,35 @@
     const rect = btn.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top  + rect.height / 2;
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 6; i++) {
       missParticles.push({
-        x: cx + (Math.random() - .5) * 80,
+        x: cx + (Math.random() - .5) * 60,
         y: cy,
-        vx: (Math.random() - .5) * 5,
-        vy: -Math.random() * 6 - 3,
-        size: Math.random() * 16 + 8,
+        vx: (Math.random() - .5) * 4,
+        vy: -Math.random() * 5 - 2,
+        size: Math.random() * 14 + 8,
         opacity: 1,
         emoji: Math.random() > .4 ? '🤍' : (Math.random() > .5 ? '✨' : '💛'),
-        decay: Math.random() * .012 + .015,
-        spin: (Math.random() - .5) * .15,
+        decay: Math.random() * .015 + .018,
+        spin: (Math.random() - .5) * .12,
         angle: 0,
       });
     }
+    // Dynamically start particle loop if not already running
+    animateParticles();
   }
 
   function animateParticles() {
+    if (isLoopRunning) return;
+    isLoopRunning = true;
     const loop = () => {
+      if (missParticles.length === 0) {
+        if (missCtx && missCanvas) {
+          missCtx.clearRect(0, 0, missCanvas.width, missCanvas.height);
+        }
+        isLoopRunning = false;
+        return; // STOP loop completely to save battery and CPU!
+      }
       if (!missCtx) { missRafId = requestAnimationFrame(loop); return; }
       missCtx.clearRect(0, 0, missCanvas.width, missCanvas.height);
       missParticles = missParticles.filter(p => p.opacity > 0);
