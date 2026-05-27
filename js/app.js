@@ -641,7 +641,7 @@
         let polaroidHTML = '';
         if (item.isAnniversary) {
           polaroidHTML = `
-            <div class="card-diagonal-polaroid" aria-label="Our memory polaroid">
+            <div class="card-diagonal-polaroid" aria-label="Our memory polaroid" style="cursor: pointer;">
               <img src="./assets/diagonal_photo.png" alt="Starry sky or special memory" />
             </div>
           `;
@@ -655,6 +655,18 @@
           <p class="text-card-caption">${item.caption}</p>
         `;
         container.appendChild(tc);
+
+        if (item.isAnniversary) {
+          const diagPolaroid = tc.querySelector('.card-diagonal-polaroid');
+          if (diagPolaroid) {
+            diagPolaroid.addEventListener('click', () => {
+              openLightbox({
+                photo: "./assets/diagonal_photo.png",
+                polaroidCaption: "I LOB U ✦ 28.06.24"
+              });
+            });
+          }
+        }
         return;
       }
 
@@ -676,15 +688,17 @@
         const vid = document.createElement('video');
         vid.className = 'polaroid-img';
         vid.src = item.video;
-        vid.muted = true; vid.loop = true; vid.playsInline = true; vid.preload = 'metadata';
+        vid.setAttribute('muted', 'true');
+        vid.setAttribute('loop', 'true');
+        vid.setAttribute('playsinline', 'true');
+        vid.setAttribute('autoplay', 'true');
+        vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
+        vid.preload = 'auto';
         polaroid.appendChild(vid);
 
         const badge = document.createElement('div');
         badge.className = 'video-badge'; badge.textContent = '▶';
         polaroid.appendChild(badge);
-
-        polaroid.addEventListener('mouseenter', () => vid.play().catch(() => {}));
-        polaroid.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
 
       } else if (item.photo) {
         const img = document.createElement('img');
@@ -697,6 +711,10 @@
         ph.textContent = item.isFuture ? '🌏' : '📷';
         polaroid.appendChild(ph);
       }
+
+      polaroid.addEventListener('click', () => {
+        openLightbox(item);
+      });
 
       const cap = document.createElement('div');
       cap.className = 'polaroid-cap';
@@ -976,22 +994,81 @@
     });
   }
 
-  function openLightbox(photo) {
+  function openLightbox(item) {
     const lb     = $('lightbox');
     const lbImg  = $('lb-img');
+    const lbVid  = $('lb-video');
     const lbCap  = $('lb-caption');
     const lbClose= $('lb-close');
 
     if (!lb) return;
-    if (lbImg) { if (photo.src) { lbImg.src = photo.src; lbImg.style.display = 'block'; } else { lbImg.style.display = 'none'; } }
-    if (lbCap) lbCap.textContent = photo.caption;
+
+    // Pause global music player if we are playing a video with sound!
+    let wasMusicPlaying = false;
+    if (item.video && globalPlaying) {
+      wasMusicPlaying = true;
+      globalAudio.pause();
+      globalPlaying = false;
+      const gpPlayBtn = $('gp-play-pause');
+      if (gpPlayBtn) gpPlayBtn.textContent = '▶';
+      const eqBars = document.querySelectorAll('.eq-bar');
+      eqBars.forEach(b => b.classList.remove('active'));
+    }
+
+    if (item.video) {
+      if (lbImg) lbImg.style.display = 'none';
+      if (lbVid) {
+        lbVid.src = item.video;
+        lbVid.style.display = 'block';
+        lbVid.play().catch(() => {});
+      }
+    } else {
+      if (lbVid) {
+        lbVid.pause();
+        lbVid.src = '';
+        lbVid.style.display = 'none';
+      }
+      if (lbImg) {
+        lbImg.src = item.photo || item.src;
+        lbImg.style.display = 'block';
+      }
+    }
+
+    if (lbCap) lbCap.textContent = item.polaroidCaption || item.caption || '';
 
     lb.classList.add('open');
 
-    const close = () => lb.classList.remove('open');
+    const close = () => {
+      lb.classList.remove('open');
+      if (lbVid) {
+        lbVid.pause();
+        lbVid.src = '';
+      }
+      // Resume global music player if it was playing!
+      if (wasMusicPlaying) {
+        globalAudio.play().then(() => {
+          globalPlaying = true;
+          const gpPlayBtn = $('gp-play-pause');
+          if (gpPlayBtn) gpPlayBtn.textContent = '⏸';
+          const eqBars = document.querySelectorAll('.eq-bar');
+          eqBars.forEach(b => b.classList.add('active'));
+        }).catch(() => {});
+      }
+    };
+
     if (lbClose) lbClose.addEventListener('click', close, { once: true });
-    lb.addEventListener('click', (e) => { if (e.target === lb) close(); }, { once: true });
-    document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); } });
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb || e.target === lbClose) {
+        close();
+      }
+    });
+
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') {
+        close();
+        document.removeEventListener('keydown', esc);
+      }
+    });
   }
 
   /* ═══════════════════════════════════════════════════════
