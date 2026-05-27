@@ -442,7 +442,7 @@
         }
       }
 
-      globalAudio.src = track.file;
+      globalAudio.src = track.file + '?v=' + Date.now();
       globalAudio.load();
 
       // Update current playing text
@@ -555,14 +555,48 @@
       }
     });
 
-    // Track click to scrub
+    // Fully interactive scrubbing (click, drag, and touch!)
     if (progressTrack) {
-      progressTrack.addEventListener('click', (e) => {
+      let isDragging = false;
+
+      const scrub = (clientX) => {
         const rect = progressTrack.getBoundingClientRect();
-        const ratio = (e.clientX - rect.left) / rect.width;
+        const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
         if (globalAudio.duration) {
           globalAudio.currentTime = ratio * globalAudio.duration;
         }
+      };
+
+      // Mouse events
+      progressTrack.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        scrub(e.clientX);
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          scrub(e.clientX);
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch events (for mobile!)
+      progressTrack.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        scrub(e.touches[0].clientX);
+      }, { passive: true });
+
+      document.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+          scrub(e.touches[0].clientX);
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchend', () => {
+        isDragging = false;
       });
     }
 
