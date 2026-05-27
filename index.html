@@ -103,6 +103,13 @@
       <div class="hero-overlay"></div>
     </div>
 
+    <!-- Diagonal photo in upper right corner -->
+    <div class="diagonal-polaroid-wrap" aria-label="Special memory">
+      <div class="diagonal-polaroid-card">
+        <img src="./assets/diagonal_photo.png" alt="Starry sky or special memory" class="diagonal-polaroid-img" />
+      </div>
+    </div>
+
     <canvas id="heart-canvas" aria-hidden="true"></canvas>
 
     <!-- Mascots -->
@@ -305,6 +312,31 @@
   </div>
 
 </div><!-- /#app -->
+
+<!-- Global background audio control bar -->
+<div id="global-music-player" class="global-player">
+  <div class="gp-left">
+    <div class="gp-equalizer" id="gp-eq" aria-hidden="true">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+    <div class="gp-details">
+      <span class="gp-title">Ehsaan Tera Hoga Mujh Par</span>
+      <span class="gp-desc">playing automatically 🌸</span>
+    </div>
+  </div>
+  <div class="gp-right">
+    <button id="gp-play-pause" class="gp-play-btn" aria-label="Play/Pause">⏸</button>
+    <div class="gp-progress-track" id="gp-progress-track" role="slider" aria-label="Music progress">
+      <div class="gp-progress-fill" id="gp-progress-fill"></div>
+    </div>
+    <span id="gp-time">0:00</span>
+  </div>
+</div>
+
+<audio id="global-audio" src="./assets/audio/ehsaan-tera.mp3" loop preload="auto"></audio>
 
 <!-- ═══════════════════════════════════════════
      SCRIPTS (loaded in order, no defer needed for data)

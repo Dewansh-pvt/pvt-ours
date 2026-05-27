@@ -16,8 +16,14 @@
   let quickTapCount = 0;
   let isLoopRunning = false;
 
+  // Global Music Player state
+  let globalAudio = null;
+  let globalPlaying = false;
+  let audioStarted = false;
+
   /* ─── HELPERS ────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
+  function pad(n) { return String(n).padStart(2, '0'); }
   function fmtTime(s) { if (isNaN(s)) return '0:00'; return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`; }
 
   /* ─── FLOATING HEARTS (Home Screen Background) ───────── */
@@ -314,44 +320,43 @@
     loop();
   }
 
-  /* Cassette Easter Egg */
+  /* Cassette Easter Egg (Remote-Controls the Global Music Track!) */
   function initCassetteEgg() {
     const trigger = $('cassette-trigger');
     const modal   = $('cassette-modal');
     const closeBtn= $('cassette-close');
     const playBtn = $('cassette-play');
-    const audio   = $('cassette-audio');
     const reelL   = $('reel-l');
     const reelR   = $('reel-r');
 
     if (!trigger || !modal) return;
 
-    let playing = false;
-
     trigger.addEventListener('click', () => modal.classList.add('open'));
 
     const closeModal = () => {
       modal.classList.remove('open');
-      if (playing && audio) { audio.pause(); audio.currentTime = 0; playing = false; updateCassetteIcon(); }
     };
 
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
+    // Sync play status with global audio
     const updateCassetteIcon = () => {
-      if (playBtn) playBtn.textContent = playing ? '⏸' : '▶';
-      [reelL, reelR].forEach(r => { if (r) r.classList.toggle('spinning', playing); });
+      if (playBtn) playBtn.textContent = globalPlaying ? '⏸' : '▶';
+      [reelL, reelR].forEach(r => { if (r) r.classList.toggle('spinning', globalPlaying); });
     };
 
-    if (playBtn && audio) {
+    if (playBtn) {
       playBtn.addEventListener('click', () => {
-        if (playing) { audio.pause(); playing = false; }
-        else { audio.play().catch(() => {}); playing = true; }
-        updateCassetteIcon();
+        const gpPlayBtn = $('gp-play-pause');
+        if (gpPlayBtn) gpPlayBtn.click(); // Trigger global play button to keep states synced!
+        setTimeout(updateCassetteIcon, 50);
       });
-      audio.addEventListener('ended', () => { playing = false; updateCassetteIcon(); });
     }
+
+    // Re-sync icon when opening cassette trigger
+    trigger.addEventListener('click', updateCassetteIcon);
   }
 
   /* Cuddle Sticker Egg Modal */
@@ -363,6 +368,88 @@
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+  }
+
+  /* ─── GLOBAL STICKY BOTTOM MUSIC PLAYER ──────────────── */
+  function initGlobalMusic() {
+    globalAudio = $('global-audio');
+    const playBtn = $('gp-play-pause');
+    const eqBars = document.querySelectorAll('.eq-bar');
+    const progressTrack = $('gp-progress-track');
+    const progressFill = $('gp-progress-fill');
+    const timeLabel = $('gp-time');
+
+    if (!globalAudio || !playBtn) return;
+
+    const updateEQ = (active) => {
+      eqBars.forEach(b => b.classList.toggle('active', active));
+      const cassettePlay = $('cassette-play');
+      if (cassettePlay) {
+        cassettePlay.textContent = active ? '⏸' : '▶';
+        const reelL = $('reel-l');
+        const reelR = $('reel-r');
+        [reelL, reelR].forEach(r => { if (r) r.classList.toggle('spinning', active); });
+      }
+    };
+
+    const togglePlayback = () => {
+      if (globalPlaying) {
+        globalAudio.pause();
+        globalPlaying = false;
+        playBtn.textContent = '▶';
+        updateEQ(false);
+      } else {
+        globalAudio.play().then(() => {
+          globalPlaying = true;
+          playBtn.textContent = '⏸';
+          updateEQ(true);
+        }).catch(() => {});
+      }
+    };
+
+    playBtn.addEventListener('click', togglePlayback);
+
+    // Track click to scrub
+    if (progressTrack) {
+      progressTrack.addEventListener('click', (e) => {
+        const rect = progressTrack.getBoundingClientRect();
+        const ratio = (e.clientX - rect.left) / rect.width;
+        if (globalAudio.duration) {
+          globalAudio.currentTime = ratio * globalAudio.duration;
+        }
+      });
+    }
+
+    // Time & progress bar updates
+    globalAudio.addEventListener('timeupdate', () => {
+      if (!globalAudio.duration) return;
+      const pct = (globalAudio.currentTime / globalAudio.duration) * 100;
+      if (progressFill) progressFill.style.width = pct + '%';
+      if (timeLabel) timeLabel.textContent = fmtTime(globalAudio.currentTime);
+    });
+
+    // Auto-start play on first user interaction to bypass autoplay restrictions!
+    const startAudioOnInteraction = () => {
+      if (audioStarted) return;
+      audioStarted = true;
+      globalAudio.play().then(() => {
+        globalPlaying = true;
+        playBtn.textContent = '⏸';
+        updateEQ(true);
+      }).catch(() => {
+        audioStarted = false; // retry on next interaction if blocked
+      });
+    };
+
+    document.addEventListener('click', startAudioOnInteraction, { once: true });
+    document.addEventListener('touchstart', startAudioOnInteraction, { once: true });
+    document.addEventListener('keydown', startAudioOnInteraction, { once: true });
+
+    // Also link submit of gate-form to trigger audio immediately!
+    const gateForm = $('gate-form');
+    if (gateForm) {
+      gateForm.addEventListener('submit', startAudioOnInteraction);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -650,6 +737,11 @@
 
     playBtn.addEventListener('click', () => {
       if (audioEl.paused) {
+        // Pause global audio first to prevent overlap!
+        if (globalAudio && globalPlaying) {
+          const gpPlayBtn = $('gp-play-pause');
+          if (gpPlayBtn) gpPlayBtn.click();
+        }
         audioEl.play().then(() => { isPlaying = true; updateUI(); }).catch(() => {});
       } else {
         audioEl.pause(); isPlaying = false; updateUI();
@@ -823,6 +915,7 @@
     initHearts();
     initNav();
     initGate();
+    initGlobalMusic();
     hideLoader();
   }
 

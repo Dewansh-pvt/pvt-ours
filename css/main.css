@@ -919,6 +919,169 @@ a { color: inherit; text-decoration: none; }
 }
 .modal-close:hover { background: var(--pink); color: white; transform: rotate(90deg); }
 
+/* Global Bottom Sticky Music Player */
+.global-player {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 64px;
+  background: rgba(255, 245, 248, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 107, 157, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 990;
+  box-shadow: 0 -4px 24px rgba(255, 107, 157, 0.08);
+  animation: slide-up-player 0.8s var(--ease-bounce) forwards;
+}
+@keyframes slide-up-player {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.gp-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.gp-details {
+  display: flex;
+  flex-direction: column;
+}
+.gp-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pink-deep);
+}
+.gp-desc {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* EQ Bouncing equalizer */
+.gp-equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 20px;
+  width: 20px;
+}
+.eq-bar {
+  width: 3px;
+  height: 4px;
+  background: var(--pink);
+  border-radius: 99px;
+  transition: height 0.2s ease;
+}
+.eq-bar.active {
+  animation: eq-bounce 0.7s infinite alternate;
+}
+.eq-bar:nth-child(2).active { animation-duration: 0.5s; animation-delay: 0.15s; }
+.eq-bar:nth-child(3).active { animation-duration: 0.8s; animation-delay: 0.05s; }
+.eq-bar:nth-child(4).active { animation-duration: 0.6s; animation-delay: 0.2s; }
+
+@keyframes eq-bounce {
+  from { height: 4px; }
+  to { height: 18px; }
+}
+
+.gp-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-grow: 0;
+  width: 50%;
+  max-width: 400px;
+  justify-content: flex-end;
+}
+.gp-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--grad-pink);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(255,107,157,0.3);
+  transition: transform 0.2s var(--ease-bounce);
+}
+.gp-play-btn:hover {
+  transform: scale(1.1);
+}
+.gp-progress-track {
+  flex-grow: 1;
+  height: 4px;
+  background: rgba(255, 107, 157, 0.15);
+  border-radius: 99px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.gp-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--grad-pink);
+  border-radius: 99px;
+}
+#gp-time {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--pink);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* Diagonal polaroid wrapper in Home Screen */
+.diagonal-polaroid-wrap {
+  position: absolute;
+  top: 140px;
+  right: 48px;
+  z-index: 10;
+}
+.diagonal-polaroid-card {
+  background: white;
+  padding: 0.6rem 0.6rem 2.2rem;
+  border-radius: 4px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  transform: rotate(6deg);
+  transition: transform 0.4s var(--ease-bounce), box-shadow 0.4s;
+  width: 140px;
+  border: 1px solid rgba(255, 107, 157, 0.05);
+}
+.diagonal-polaroid-card:hover {
+  transform: rotate(0deg) scale(1.1);
+  box-shadow: 0 20px 48px rgba(255,107,157,0.22);
+}
+.diagonal-polaroid-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* Let's push dashboard content down a tad to make sure diagonal card sits nicely */
+@media (max-width: 768px) {
+  .diagonal-polaroid-wrap {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 1rem auto 0;
+    display: flex;
+    justify-content: center;
+  }
+  .diagonal-polaroid-card {
+    transform: rotate(-3deg);
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */

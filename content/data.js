@@ -245,112 +245,14 @@ const EVENING_PHOTOS = [
 /* ─── OPEN WHEN LETTERS ─────────────────────────────────── */
 const OPEN_WHEN_LETTERS = [
   {
-    label: "Open When...", sublabel: "you miss me",
-    seal: "🤍", accentColor: "#B5451B",
-    letter: {
-      eyebrow: "A letter for when the distance feels heavy",
-      title: "When You Miss Me",
-      body: `<p>Then stop. Close your eyes. I need you to remember something specific.</p>
-<p>Remember the coffee shop. 11th January 2025. That moment when hands found each other across the table and the room got very warm very suddenly. <em>That.</em> That is where I live when we're apart.</p>
-<p>Missing someone means you had something real. And 28th June 2024 — that day we said those three very important, slightly misspelt words — proved that we very much do.</p>
-<p>I'm not far. I'm just in the next scene. And the next scene is going to be so good.</p>`,
-      signature: "Always yours, Krishna",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "you're having a bad day",
-    seal: "🌧️", accentColor: "#5B7FA6",
-    letter: {
-      eyebrow: "A letter for the hard days",
-      title: "When Today is Being Mean to You",
-      body: `<p>Okay. Let's talk about this. Whatever today threw at you — it is not a reflection of who you are.</p>
-<p>I have watched you eat a softy in the rain during project work with the most unbothered energy I have ever seen in my life. I have watched you hold on for dear life on a giant wheel on 5th October and somehow still be the most entertaining person in the gondola. I have seen you in a garba outfit and I don't think the world deserves you, honestly.</p>
-<p>One bad day doesn't touch any of that.</p>
-<p><em>Also — I LOB U. Even on the bad days. Especially on the bad days.</em></p>`,
-      signature: "Your biggest fan, K.",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "you can't sleep",
-    seal: "🌙", accentColor: "#6B4F8C",
-    letter: {
-      eyebrow: "A letter for 2am",
-      title: "When the Night Feels Too Long",
-      body: `<p>I've thought about this — the specific texture of not being able to sleep. How the ceiling looks different at 2am. How everything feels heavier and louder in the quiet.</p>
-<p>I want you to know something I've never quite found the words for out loud: I knew. From the very first heart I sent on your photo — 28th May 2024 — I somehow already knew you were going to matter to me in a way nothing else did.</p>
-<p>Close your eyes. Breathe slowly. The mandir, the coffee shop, the giant wheel, the pizza place — all of it is still there. All of it is still ours. I'm not going anywhere.</p>
-<p><em>Go to sleep, love. You're okay. You're so much more than okay.</em></p>`,
-      signature: "Goodnight 🌙  —K",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "you need a laugh",
-    seal: "😭", accentColor: "#D4A843",
-    letter: {
-      eyebrow: "A certified serotonin delivery",
-      title: "An Urgent Message",
-      body: `<p>I need to formally document something for the record:</p>
-<p>On 5th October 2025, on a giant wheel, with a 47-second video as evidence, you — the most effortlessly cool person I know — held on to me for DEAR LIFE and I am NOT over it.</p>
-<p>This video exists. I have it. It is archived. It is protected.</p>
-<p>Also, the garba silly photo? The one where you know which one I mean? That one too. Also archived. Also protected.</p>
-<p><em>You are, objectively, a menace. The most wonderful, most ridiculous, most mine menace there is.</em></p>`,
-      signature: "Filed with love, K.",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "you doubt yourself",
-    seal: "⭐", accentColor: "#B5451B",
-    letter: {
-      eyebrow: "Read this very carefully",
-      title: "When Your Brain Lies to You",
-      body: `<p>Your brain is wrong. This is not my opinion. This is a fact.</p>
-<p>I have watched you handle school, coaching, projects, farewells, boards, everything — and I have watched you do it while somehow remaining the most genuinely herself person in any room.</p>
-<p>The school farewell photo. The scribble day. Teacher's Day. The mandir. The coffee dates. In every single one, you show up fully, warmly, without performing it.</p>
-<p>That is who you actually are. The doubt you're feeling right now is just noise. The signal — you — is loud and clear and absolutely extraordinary.</p>
-<p><em>I chose you. I would choose you again tomorrow. That's not sentiment. That's data.</em></p>`,
-      signature: "Completely, K.",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "the distance feels huge",
-    seal: "✈️", accentColor: "#4A7C6F",
-    letter: {
-      eyebrow: "From wherever I am, to wherever you are",
-      title: "Across the Distance",
-      body: `<p>Here is what I do when I miss you: I go through photos. The coaching farewell. The movie. Your birthday. 11th January. The pizza place. The giant wheel. The garba. Your birthday again. Scribble day. Farewell. Temple. The last one.</p>
-<p>That is a long list for two years. It is a beautiful, stupid-long list. And there are so many more to add.</p>
-<p>The distance doesn't shrink what we have. If anything, every time I've been away from you, I've been more certain about this than I was before.</p>
-<p><em>One day — and I mean this — we're going to have so much time together that we'll forget we ever spent any of it apart. We'll call this stretch "the before." And everything after it will be ours.</em></p>`,
-      signature: "Missing you and meaning it, K.",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "you want to dance",
-    seal: "💃", accentColor: "#C47A1E",
-    letter: {
-      eyebrow: "Mandatory dancing instructions enclosed",
-      title: "A Dance Request",
-      body: `<p>I have seen you at garba. I know what you're capable of.</p>
-<p>Put a song on. The one we'd choose if we were in a small room somewhere with no one watching. Close your eyes. Imagine the lights are low and it's just us and we have nowhere to be.</p>
-<p>That's the scene I keep. The one we haven't had yet — a kitchen somewhere, a song playing, the two of us dancing for absolutely no one.</p>
-<p><em>Save me a dance. I'll be the one who's enthusiastic but not technically impressive.</em></p>
-<p>Actually, you already know that. You've seen the evidence.</p>`,
-      signature: "Save me one, K.",
-    }
-  },
-  {
-    label: "Open When...", sublabel: "it's our anniversary ✨",
-    seal: "🥂", accentColor: "#D4A843",
+    label: "Open When...", sublabel: "Happy 2nd Anniversary 🤗",
+    seal: "🥂", accentColor: "#FF6B9D",
     isSpecial: true,
     letter: {
-      eyebrow: "28th June. Two years.",
-      title: "Our Anniversary",
-      body: `<p>28th June 2024. Three words — "I LOB U" — and everything changed.</p>
-<p>Two years looks like this from where I'm standing: a coaching farewell group photo. A heart on a photo. A movie we weren't really watching. A birthday. A coffee shop on 11th January. Hands held for the first time. School uniforms. A seniors farewell where you were looking at me and I didn't know. Pizza. THE COACHING. Rain and softies. A mandir. Garba nights. A giant wheel with a 47-second video I am never deleting. Your birthday. Scribble day. School farewell. A temple in March. And a last photo, for now, with a gift you're holding and a look I will keep forever.</p>
-<p>That is two years. That is us. That is the most beautiful collection of ordinary, extraordinary, completely-ours moments I have ever been part of.</p>
-<p>Happy anniversary, Shriyanshi. Here's to every chapter we haven't written yet. I want all of them. With you.</p>
-<p><em>I LOB U. Always. And I mean every letter of it.</em></p>`,
-      signature: "Yours, completely. — Krishna 🤍",
+      eyebrow: "Est. 28 June 2024",
+      title: "Happy 2nd Anniversary! 🤗",
+      body: `<p>Coming soon... 💖</p>`,
+      signature: "With love, Dewansh",
     }
-  },
+  }
 ];
