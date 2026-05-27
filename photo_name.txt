@@ -1,0 +1,80 @@
+================================================================================
+🌸 SHRISHY & DEWANSH'S WEBSITE — COMPLETE PHOTO & VIDEO MEDIA LIST 🌸
+================================================================================
+
+This file lists every single photo and video file used in your website, their exact 
+filenames, relative paths, and the exact context/memory they represent.
+
+To display your actual memories, simply rename your own photos or videos to these 
+exact filenames and overwrite/replace the files in their respective folders!
+
+--------------------------------------------------------------------------------
+1. HERO & GENERAL BACKGROUNDS (assets/)
+--------------------------------------------------------------------------------
+FILENAME                    FOLDER PATH                     CONTEXT / DESCRIPTION
+--------------------------------------------------------------------------------
+hero-1.jpg                  assets/photos/hero/             First hero background photo for the home screen slideshow (Starry sky or beautiful romantic scenery).
+hero-2.jpg                  assets/photos/hero/             Second hero background photo for the home screen slideshow crossfade.
+sky_constellation.png       assets/                         Constellation photo map showing 99 stars representing 99 weeks together.
+diagonal_photo.png          assets/                         Starry sky or your absolute favorite special memory photo (displayed on home screen top-right and on the "I LOB U" timeline card).
+sticker.png                 assets/                         Cute cuddle sticker displayed when Shriyanshi taps "I Miss You" 10 times quickly.
+
+--------------------------------------------------------------------------------
+2. PROFILE AVATARS (assets/)
+--------------------------------------------------------------------------------
+FILENAME                    FOLDER PATH                     CONTEXT / DESCRIPTION
+--------------------------------------------------------------------------------
+phone_bear.png              assets/                         Dewansh's circular profile photo (displayed on loading, gate, and home screens).
+phone_panda.png             assets/                         Shriyanshi's circular profile photo (displayed on loading, gate, and home screens).
+
+--------------------------------------------------------------------------------
+3. TIMELINE OUR STORY MEMORIES (assets/photos/timeline/ & assets/videos/)
+--------------------------------------------------------------------------------
+FILENAME                    FOLDER PATH                     CONTEXT / DESCRIPTION
+--------------------------------------------------------------------------------
+01-coaching-farewell.jpg    assets/photos/timeline/         Coaching farewell group photo (Chapter 1 - where it started).
+03-movie-date.jpg           assets/photos/timeline/         Your first real movie date photo.
+04-birthday-2024.jpg        assets/photos/timeline/         Shriyanshi's birthday photo from 2024.
+05-11jan-coffee.jpg         assets/photos/timeline/         Coffee shop date photo (11 Jan 2025 - First hands held).
+06-her-fav-photo.jpg        assets/photos/timeline/         A candid photo of Shriyanshi that Dewansh keeps coming back to.
+07-school-dress.jpg         assets/photos/timeline/         A sweet photo of you both in school uniforms.
+08-farewell-seniors.jpg     assets/photos/timeline/         School event saying goodbye to seniors (candid photo of Shriyanshi looking at Dewansh).
+pizza-date-march.mp4        assets/videos/                  Video clip from your pizza date in March 2025 (Chapter 4).
+10-the-coaching.jpg         assets/photos/timeline/         Back at coaching center together, but now as a couple.
+11-rain-softy.jpg           assets/photos/timeline/         Shriyanshi eating an ice cream softy in the rain under overcast skies.
+12-mandir.jpg               assets/photos/timeline/         Together visiting the mandir in early morning light.
+13-coffee-aesthetic.jpg     assets/photos/timeline/         Candid golden-hour coffee date photo across the table.
+14-teachers-day.jpg         assets/photos/timeline/         Teacher's Day celebration program photos (5 September 2025).
+15-garba.jpg                assets/photos/timeline/         Navratri Garba outfit photo (October 2025).
+giant-wheel.mp4             assets/videos/                  Silly/scared video on the giant wheel at Navratri (5 October 2025).
+17-friend-birthday.jpg      assets/photos/timeline/         Celebrating a friend's birthday together.
+18-her-birthday.jpg         assets/photos/timeline/         Celebrating Shriyanshi's birthday (11 November 2025).
+21-scribble-day.jpg         assets/photos/timeline/         Scribble day photo (writing scribbles on school uniforms).
+22-school-farewell.jpg      assets/photos/timeline/         School farewell photos (graduation formal clothes).
+23-temple-march.jpg         assets/photos/timeline/         Visit to the temple in March 2026.
+24-extra.jpg                assets/photos/timeline/         An extra, ordinary day memory photo.
+25-gift.jpg                 assets/photos/timeline/         Shriyanshi holding a special gift given by Dewansh.
+26-last-meeting.jpg         assets/photos/timeline/         Your last meeting photo before the long distance (Chapter 7 - see you soon).
+
+--------------------------------------------------------------------------------
+4. EVENING WALK POLAROID GALLERY (assets/photos/polaroids/)
+--------------------------------------------------------------------------------
+FILENAME                    FOLDER PATH                     CONTEXT / DESCRIPTION
+--------------------------------------------------------------------------------
+01-her-fav.jpg              assets/photos/polaroids/        Polaroid of her favorite candid photo (displayed in gallery).
+02-rain-softy.jpg           assets/photos/polaroids/        Polaroid of softy in the rain (displayed in gallery).
+03-mandir.jpg               assets/photos/polaroids/        Polaroid of mandir visit together (displayed in gallery).
+04-coffee-aesthetic.jpg     assets/photos/polaroids/        Polaroid of aesthetic coffee date (displayed in gallery).
+05-garba-silly.jpg          assets/photos/polaroids/        Silly photo polaroid from Navratri Garba night (displayed in gallery).
+08-garba-good.jpg           assets/photos/polaroids/        Beautiful main photo polaroid from Navratri Garba night (displayed in gallery).
+
+================================================================================
+💡 QUICK TIPS FOR BEST DISPLAY QUALITY:
+================================================================================
+1. Image Sizing: Make sure the profile pictures (phone_bear.png & phone_panda.png) 
+   and diagonal_photo.png are 1:1 aspect ratio (squares) so they crop into perfect 
+   circles and polaroids natively.
+2. Formats: Stick to standard .jpg and .png formats as named in the list.
+3. Videos: Keep your MP4 videos short (5-15 seconds) and optimized for web so the 
+   page loads instantly!
+================================================================================
