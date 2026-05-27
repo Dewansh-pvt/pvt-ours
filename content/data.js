@@ -24,8 +24,8 @@ const CONFIG = {
 const PLAYLIST = [
   { title: "Ehsaan Tera Hoga Mujh Par", file: "./assets/audio/ehsaan-tera.mp3", category: "our song 🌸" },
   { title: "Pal Pal Dil Ke Paas", file: "./assets/audio/pal-pal.mp3", category: "classic 🌙" },
-  { title: "Our Song", file: "./assets/audio/our-song.mp3", category: "sweet ✨" },
-  { title: "Ambient Background", file: "./assets/audio/ambient.mp3", category: "calm 🍃" }
+  { title: "Aaja piya tohe pyaar doon", file: "./assets/audio/pyaar-doon.mp3", category: "forever 💖" },
+  { title: "TUM TAK", file: "./assets/audio/Tum-tak.mp3", category: "First Story ✨" }
 ];
 
 /* ─── TIMELINE DATA ─────────────────────────────────────── */
