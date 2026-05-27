@@ -20,6 +20,7 @@
   let globalAudio = null;
   let globalPlaying = false;
   let audioStarted = false;
+  let currentTrackIndex = 0;
 
   /* ─── HELPERS ────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
@@ -374,6 +375,13 @@
   function initGlobalMusic() {
     globalAudio = $('global-audio');
     const playBtn = $('gp-play-pause');
+    const prevBtn = $('gp-prev');
+    const nextBtn = $('gp-next');
+    const toggleBtn = $('gp-toggle-drawer');
+    const closeDrawerBtn = $('gp-drawer-close');
+    const drawer = $('gp-drawer');
+    const listContainer = $('gp-drawer-list');
+    const infoClick = $('gp-info-click');
     const eqBars = document.querySelectorAll('.eq-bar');
     const progressTrack = $('gp-progress-track');
     const progressFill = $('gp-progress-fill');
@@ -392,6 +400,97 @@
       }
     };
 
+    const renderPlaylist = () => {
+      if (!listContainer) return;
+      listContainer.innerHTML = '';
+      PLAYLIST.forEach((track, index) => {
+        const item = document.createElement('div');
+        item.className = `gp-track-item${index === currentTrackIndex ? ' active' : ''}`;
+        item.setAttribute('role', 'listitem');
+        item.innerHTML = `
+          <div class="gp-track-info">
+            <span class="gp-track-num">${pad(index + 1)}</span>
+            <span class="gp-track-title">${track.title}</span>
+            <span class="gp-track-tag">${track.category}</span>
+          </div>
+          <div class="gp-track-playing-icon" aria-hidden="true">💖</div>
+        `;
+        item.addEventListener('click', () => {
+          playTrack(index);
+        });
+        listContainer.appendChild(item);
+      });
+    };
+
+    const playTrack = (index, forcePlay = true) => {
+      if (index < 0 || index >= PLAYLIST.length) return;
+      currentTrackIndex = index;
+      const track = PLAYLIST[index];
+
+      // Pause evening walk audio if it is playing!
+      if (audioEl && !audioEl.paused) {
+        audioEl.pause();
+        isPlaying = false;
+        const eveningPlayBtn = $('audio-play');
+        if (eveningPlayBtn) {
+          const icon = $('audio-icon');
+          if (icon) icon.textContent = '▶';
+          const wbars = document.querySelectorAll('.wbar');
+          wbars.forEach(b => b.classList.remove('active'));
+          const playerEl = $('audio-player');
+          if (playerEl) playerEl.classList.remove('is-playing');
+        }
+      }
+
+      globalAudio.src = track.file;
+      globalAudio.load();
+
+      // Update current playing text
+      const titleEl = $('gp-current-title');
+      const descEl = $('gp-current-desc');
+      if (titleEl) titleEl.textContent = track.title;
+      if (descEl) descEl.textContent = `playing ${track.category} 🌸`;
+
+      // Update Cassette modal details
+      const cassetteLabel = $('cassette-label-text');
+      const cassetteTrack = $('cassette-track-name');
+      if (cassetteLabel) cassetteLabel.textContent = track.title;
+      if (cassetteTrack) cassetteTrack.textContent = track.title;
+
+      // Update active highlight in drawer
+      document.querySelectorAll('.gp-track-item').forEach((item, idx) => {
+        item.classList.toggle('active', idx === currentTrackIndex);
+      });
+
+      if (forcePlay) {
+        globalAudio.play().then(() => {
+          globalPlaying = true;
+          playBtn.textContent = '⏸';
+          updateEQ(true);
+        }).catch(() => {
+          globalPlaying = false;
+          playBtn.textContent = '▶';
+          updateEQ(false);
+        });
+      } else {
+        globalPlaying = false;
+        playBtn.textContent = '▶';
+        updateEQ(false);
+      }
+    };
+
+    const playNext = () => {
+      let nextIndex = currentTrackIndex + 1;
+      if (nextIndex >= PLAYLIST.length) nextIndex = 0;
+      playTrack(nextIndex);
+    };
+
+    const playPrev = () => {
+      let prevIndex = currentTrackIndex - 1;
+      if (prevIndex < 0) prevIndex = PLAYLIST.length - 1;
+      playTrack(prevIndex);
+    };
+
     const togglePlayback = () => {
       if (globalPlaying) {
         globalAudio.pause();
@@ -399,6 +498,21 @@
         playBtn.textContent = '▶';
         updateEQ(false);
       } else {
+        // Pause evening walk audio if it's playing!
+        if (audioEl && !audioEl.paused) {
+          audioEl.pause();
+          isPlaying = false;
+          const eveningPlayBtn = $('audio-play');
+          if (eveningPlayBtn) {
+            const icon = $('audio-icon');
+            if (icon) icon.textContent = '▶';
+            const wbars = document.querySelectorAll('.wbar');
+            wbars.forEach(b => b.classList.remove('active'));
+            const playerEl = $('audio-player');
+            if (playerEl) playerEl.classList.remove('is-playing');
+          }
+        }
+
         globalAudio.play().then(() => {
           globalPlaying = true;
           playBtn.textContent = '⏸';
@@ -408,6 +522,38 @@
     };
 
     playBtn.addEventListener('click', togglePlayback);
+    if (prevBtn) prevBtn.addEventListener('click', playPrev);
+    if (nextBtn) nextBtn.addEventListener('click', playNext);
+
+    // Toggle playlist drawer
+    const toggleDrawer = (e) => {
+      if (e) e.stopPropagation();
+      if (drawer) {
+        drawer.classList.toggle('open');
+        if (drawer.classList.contains('open')) {
+          const activeItem = drawer.querySelector('.gp-track-item.active');
+          if (activeItem) {
+            activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+        }
+      }
+    };
+
+    if (toggleBtn) toggleBtn.addEventListener('click', toggleDrawer);
+    if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', (e) => { e.stopPropagation(); drawer && drawer.classList.remove('open'); });
+    if (infoClick) infoClick.addEventListener('click', toggleDrawer);
+
+    // Close drawer when clicking outside
+    document.addEventListener('click', (e) => {
+      if (drawer && drawer.classList.contains('open')) {
+        const insideDrawer = drawer.contains(e.target);
+        const insideToggle = toggleBtn && toggleBtn.contains(e.target);
+        const insideInfo = infoClick && infoClick.contains(e.target);
+        if (!insideDrawer && !insideToggle && !insideInfo) {
+          drawer.classList.remove('open');
+        }
+      }
+    });
 
     // Track click to scrub
     if (progressTrack) {
@@ -427,6 +573,9 @@
       if (progressFill) progressFill.style.width = pct + '%';
       if (timeLabel) timeLabel.textContent = fmtTime(globalAudio.currentTime);
     });
+
+    // Sequential Autoplay: advance to next track when song ends
+    globalAudio.addEventListener('ended', playNext);
 
     // Auto-start play on first user interaction to bypass autoplay restrictions!
     const startAudioOnInteraction = () => {
@@ -450,6 +599,10 @@
     if (gateForm) {
       gateForm.addEventListener('submit', startAudioOnInteraction);
     }
+
+    // Initialize playlist track (without force playing)
+    playTrack(0, false);
+    renderPlaylist();
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -484,7 +637,18 @@
         const tc = document.createElement('div');
         tc.className = `text-card${item.isAnniversary ? ' anniversary-card' : ''}`;
         tc.setAttribute('role', 'listitem');
+        
+        let polaroidHTML = '';
+        if (item.isAnniversary) {
+          polaroidHTML = `
+            <div class="card-diagonal-polaroid" aria-label="Our memory polaroid">
+              <img src="./assets/diagonal_photo.png" alt="Starry sky or special memory" />
+            </div>
+          `;
+        }
+
         tc.innerHTML = `
+          ${polaroidHTML}
           <div class="text-card-icon">${item.specialIcon || '●'}</div>
           <div class="text-card-date">${item.date}</div>
           <h3 class="text-card-title">${item.title}${item.isLast ? ' 🤍' : ''}</h3>

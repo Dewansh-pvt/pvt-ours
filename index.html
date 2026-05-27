@@ -166,12 +166,12 @@
         <div class="cassette-body">
           <div class="cassette-reel" id="reel-l"></div>
           <div class="cassette-label-area">
-            <span class="cassette-label-text">Ehsaan Tera Hoga Mujh Par</span>
+            <span class="cassette-label-text" id="cassette-label-text">Ehsaan Tera Hoga Mujh Par</span>
           </div>
           <div class="cassette-reel" id="reel-r"></div>
           <div class="cassette-window"></div>
         </div>
-        <p class="cassette-track">Ehsaan Tera Hoga Mujh Par</p>
+        <p class="cassette-track" id="cassette-track-name">Ehsaan Tera Hoga Mujh Par</p>
         <button id="cassette-play" class="cassette-play-btn" aria-label="Play/Pause">▶</button>
         <audio id="cassette-audio" preload="none">
           <source src="./assets/audio/ehsaan-tera.mp3" type="audio/mpeg" />
@@ -315,6 +315,17 @@
 
 <!-- Global background audio control bar -->
 <div id="global-music-player" class="global-player">
+  <!-- Playlist Drawer -->
+  <div id="gp-drawer" class="gp-drawer">
+    <div class="gp-drawer-header">
+      <h3>Shriyanshi's Playlist 🌸</h3>
+      <button id="gp-drawer-close" class="gp-drawer-close-btn" aria-label="Close playlist">✕</button>
+    </div>
+    <div class="gp-drawer-list" id="gp-drawer-list" role="list">
+      <!-- Songs will be injected here dynamically -->
+    </div>
+  </div>
+
   <div class="gp-left">
     <div class="gp-equalizer" id="gp-eq" aria-hidden="true">
       <div class="eq-bar"></div>
@@ -322,13 +333,18 @@
       <div class="eq-bar"></div>
       <div class="eq-bar"></div>
     </div>
-    <div class="gp-details">
-      <span class="gp-title">Ehsaan Tera Hoga Mujh Par</span>
-      <span class="gp-desc">playing automatically 🌸</span>
+    <div class="gp-details" id="gp-info-click" style="cursor: pointer;" title="View Playlist">
+      <span class="gp-title" id="gp-current-title">Ehsaan Tera Hoga Mujh Par</span>
+      <span class="gp-desc" id="gp-current-desc">playing automatically 🌸</span>
     </div>
   </div>
   <div class="gp-right">
-    <button id="gp-play-pause" class="gp-play-btn" aria-label="Play/Pause">⏸</button>
+    <div class="gp-controls">
+      <button id="gp-prev" class="gp-control-btn" aria-label="Previous track" title="Previous Song">⏮</button>
+      <button id="gp-play-pause" class="gp-play-btn" aria-label="Play/Pause">⏸</button>
+      <button id="gp-next" class="gp-control-btn" aria-label="Next track" title="Next Song">⏭</button>
+      <button id="gp-toggle-drawer" class="gp-control-btn playlist-toggle" aria-label="Toggle playlist" title="Show playlist">🎶</button>
+    </div>
     <div class="gp-progress-track" id="gp-progress-track" role="slider" aria-label="Music progress">
       <div class="gp-progress-fill" id="gp-progress-fill"></div>
     </div>
@@ -336,7 +352,7 @@
   </div>
 </div>
 
-<audio id="global-audio" src="./assets/audio/ehsaan-tera.mp3" loop preload="auto"></audio>
+<audio id="global-audio" src="./assets/audio/ehsaan-tera.mp3" preload="auto"></audio>
 
 <!-- ═══════════════════════════════════════════
      SCRIPTS (loaded in order, no defer needed for data)
