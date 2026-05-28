@@ -116,6 +116,22 @@ const TIMELINE_DATA = [
   },
   {
     date: "2025",
+    title: "Samriddhi ka Birthday!",
+    caption: "Just the two of us sitting lovingly next to each other. Mujhe aur kuch nahi chahiye tha us din, bas tumhare gaal dabane the. 🥺",
+    video: "./assets/videos/S_B_1.mp4",
+    isVideo: true,
+    polaroidCaption: "squishing those cheeks 💕",
+  },
+  {
+    date: "2025",
+    title: "My Safe Place",
+    caption: "Bheed me bhi meri duniya bas tumhare kandhe tak hi hai. Sleeping on your shoulder is literally the most comforting feeling ever. 🤍",
+    video: "./assets/videos/S_B_2.mp4",
+    isVideo: true,
+    polaroidCaption: "sleeping on your shoulder 🥺",
+  },
+  {
+    date: "2025",
     title: "Rain & A Softy",
     caption: "Project work, overcast sky, and you eating a softy in the rain with the most unbothered energy imaginable. This is one of my favourite memories. Don't ask me to explain it.",
     photo: "./assets/photos/timeline/11-rain-softy.jpg",
