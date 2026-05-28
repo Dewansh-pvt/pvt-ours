@@ -117,7 +117,7 @@ const TIMELINE_DATA = [
   {
     date: "2025",
     title: "Samriddhi ka Birthday!",
-    caption: "Just the two of us sitting lovingly next to each other. Mujhe aur kuch nahi chahiye tha us din, bas tumhare gaal dabane the. 🥺",
+    caption: "Just the two of us sitting lovingly next to each other. Mera mera gaal wapas chaiyeeee!. 🥺",
     video: "./assets/videos/S_B_1.mp4",
     isVideo: true,
     polaroidCaption: "squishing those cheeks 💕",
@@ -125,7 +125,7 @@ const TIMELINE_DATA = [
   {
     date: "2025",
     title: "My Safe Place",
-    caption: "Bheed me bhi meri duniya bas tumhare kandhe tak hi hai. Sleeping on your shoulder is literally the most comforting feeling ever. 🤍",
+    caption: "Sleeping on your shoulder is literally the most comforting feeling ever. 🤍",
     video: "./assets/videos/S_B_2.mp4",
     isVideo: true,
     polaroidCaption: "sleeping on your shoulder 🥺",
