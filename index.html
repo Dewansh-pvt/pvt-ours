@@ -335,18 +335,6 @@
       <div class="polaroid-grid" id="polaroid-grid"></div>
     </div>
 
-    <!-- Lightbox -->
-    <div id="lightbox" class="modal-overlay" role="dialog" aria-modal="true">
-      <div class="lightbox-inner">
-        <div class="lightbox-polaroid">
-          <img id="lb-img" src="" alt="" style="display:none;" />
-          <video id="lb-video" src="" controls playsinline loop style="display:none; max-width:100%; max-height:60vh; border-radius:2px;"></video>
-        </div>
-        <p id="lb-caption" class="lb-caption"></p>
-        <button id="lb-close" class="modal-close" aria-label="Close">✕</button>
-      </div>
-    </div>
-
   </section>
 
   <!-- ─────────────────────────────────────────
@@ -355,9 +343,9 @@
   <section id="screen-letters" class="screen" aria-label="Open When Letters">
 
     <div class="section-header">
-      <p class="section-eyebrow">Letters</p>
+      <span class="section-eyebrow">JUST FOR YOU</span>
       <h2 class="section-title">Open When...</h2>
-      <p class="section-sub">Eight envelopes. Open each one when the moment finds you.</p>
+      <p class="section-sub">Just one envelope for now... but more are coming! Open it when the moment finds you.</p>
     </div>
 
     <div class="envelope-grid" id="envelope-grid" role="list"></div>
@@ -388,6 +376,18 @@
     </div>
   </div>
 
+  <!-- Lightbox -->
+  <div id="lightbox" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="lightbox-inner">
+      <div class="lightbox-polaroid">
+        <img id="lb-img" src="" alt="" style="display:none;" />
+        <video id="lb-video" src="" controls playsinline loop style="display:none; max-width:100%; max-height:60vh; border-radius:2px;"></video>
+      </div>
+      <p id="lb-caption" class="lb-caption"></p>
+      <button id="lb-close" class="modal-close" aria-label="Close">✕</button>
+    </div>
+  </div>
+
 </div><!-- /#app -->
 
 <!-- Global background audio control bar -->
@@ -411,7 +411,9 @@
       <div class="eq-bar"></div>
     </div>
     <div class="gp-details" id="gp-info-click" style="cursor: pointer;" title="View Playlist">
-      <span class="gp-title" id="gp-current-title">Ehsaan Tera Hoga Mujh Par</span>
+      <div class="gp-title-wrap">
+        <span class="gp-title" id="gp-current-title">Ehsaan Tera Hoga Mujh Par</span>
+      </div>
       <span class="gp-desc" id="gp-current-desc">playing automatically 🌸</span>
     </div>
   </div>
@@ -423,7 +425,9 @@
       <button id="gp-toggle-drawer" class="gp-control-btn playlist-toggle" aria-label="Toggle playlist" title="Show playlist">🎶</button>
     </div>
     <div class="gp-progress-track" id="gp-progress-track" role="slider" aria-label="Music progress">
-      <div class="gp-progress-fill" id="gp-progress-fill"></div>
+      <div class="gp-progress-fill" id="gp-progress-fill">
+        <div class="gp-progress-dot" id="gp-progress-dot"></div>
+      </div>
     </div>
     <span id="gp-time">0:00</span>
   </div>

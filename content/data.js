@@ -4,14 +4,14 @@
 
 /* ─── CONFIG ──────────────────────────────────────────────── */
 const CONFIG = {
-  yourName:        "Dewansh",
-  herName:         "Shriyanshi",
+  yourName: "Dewansh",
+  herName: "Shriyanshi",
   anniversaryDate: "2024-06-28",
   nextMeetingDate: "2026-06-03",
-  privacyAnswer:   "1123",
+  privacyAnswer: "1123",
   cassetteSongTitle: "Ehsaan Tera Hoga Mujh Par",
   ambientTrackTitle: "Pal Pal Dil Ke Paas",
-  ambientArtist:    "for you, always",
+  ambientArtist: "for you, always",
   secretMessages: [
     "Okay okay, I miss you too. Get over here already! 🤍",
     "You literally cannot stop, can you? 😭 1123.",
@@ -82,6 +82,7 @@ const TIMELINE_DATA = [
     caption: "There is a photo of you I keep coming back to. Just you, being yourself, not posing. You have no idea how much I love it. I'm not going to tell you which one — you'd get smug about it.",
     photo: "./assets/photos/timeline/06-her-fav-photo.jpg",
     polaroidCaption: "my favourite 🤍",
+    is5x7: true,
   },
   {
     date: "2025",
@@ -133,6 +134,7 @@ const TIMELINE_DATA = [
     caption: "Low light, good coffee, and you across the table looking effortlessly like a photograph. I took note of everything about that evening. I still have those notes.",
     photo: "./assets/photos/timeline/13-coffee-aesthetic.jpg",
     polaroidCaption: "golden hour ☕",
+    is5x7: true,
   },
   {
     chapterLabel: "Chapter 5 · The Good Months",
@@ -148,6 +150,7 @@ const TIMELINE_DATA = [
     caption: "Navratri. You in that outfit. The lights, the music, the spinning. There are good photos and one gloriously silly one. I am keeping all of them. Especially the silly one.",
     photo: "./assets/photos/timeline/15-garba.jpg",
     polaroidCaption: "garba 2025 ✨",
+    is5x7: true,
   },
   {
     date: "5 October 2025",
@@ -171,6 +174,7 @@ const TIMELINE_DATA = [
     caption: "11th November. Your birthday. The day the world got you, and I think the world did very well. I want to be there for every one of these.",
     photo: "./assets/photos/timeline/18-her-birthday.jpg",
     polaroidCaption: "happy birthday 🎂 11.11",
+    is5x7: true,
   },
   {
     chapterLabel: "Chapter 7 · The Final Chapter (So Far)",
@@ -242,12 +246,12 @@ const TIMELINE_DATA = [
 
 /* ─── EVENING WALK PHOTOS ───────────────────────────────── */
 const EVENING_PHOTOS = [
-  { src: "./assets/photos/polaroids/01-her-fav.jpg",           caption: "the photo that started everything 💛" },
-  { src: "./assets/photos/polaroids/02-rain-softy.jpg",        caption: "softy in the rain 🌧️" },
-  { src: "./assets/photos/polaroids/03-mandir.jpg",            caption: "together at the mandir 🙏" },
-  { src: "./assets/photos/polaroids/04-coffee-aesthetic.jpg",  caption: "golden hour and good coffee ☕" },
-  { src: "./assets/photos/polaroids/05-garba-silly.jpg",       caption: "garba chaos (the silly one) 😂" },
-  { src: "./assets/photos/polaroids/08-garba-good.jpg",        caption: "garba nights ✨" },
+  { src: "./assets/photos/polaroids/01-her-fav.jpg", caption: "the photo that started everything 💛" },
+  { src: "./assets/photos/polaroids/02-rain-softy.jpg", caption: "softy in the rain 🌧️" },
+  { src: "./assets/photos/polaroids/03-mandir.jpg", caption: "together at the mandir 🙏" },
+  { src: "./assets/photos/polaroids/04-coffee-aesthetic.jpg", caption: "golden hour and good coffee ☕" },
+  { src: "./assets/photos/polaroids/05-garba-silly.jpg", caption: "garba chaos (the silly one) 😂" },
+  { src: "./assets/photos/polaroids/08-garba-good.jpg", caption: "garba nights ✨" },
 ];
 
 /* ─── OPEN WHEN LETTERS ─────────────────────────────────── */
@@ -259,8 +263,24 @@ const OPEN_WHEN_LETTERS = [
     letter: {
       eyebrow: "Est. 28 June 2024",
       title: "Happy 2nd Anniversary! 🤗",
-      body: `<p>Coming soon... 💖</p>`,
-      signature: "With love, Dewansh",
+      body: `<p>Hi meri Chwwetuuu Bubu, 💕</p>
+<p>Happy Happy Happyyyyyyyy 2nd Anniversary bacchuuuu! Do saal ho gaye tumhe mere nakhre jhelte hue 😋, sacchi yaar, trko toh award milna chahiye bhyi. 😂</p>
+<p>Iss saal jyada saath me to ni reh paaye 🥹 lekin jitta bhi rahe na usme ka agar sabse favorite memory batau, toh wo definitely CBSE board exams hoga bhyiii. Mujhe pata hai papers pe focus karna tha, par sach bataun toh mera poora dhyan bas tumhe dekhne mein hi laga rehta tha! mrko hi Pata hai kaise paper likh ke aaya hoon. 🤭, aur baaki humlogo ka chaplus chougdiii on fire bhyii uska to har second bahut jyada memoriable hai no jokes! best besttt besstttt ekdumm!! lekin saale tum dono rafu chakkr hogye 😭</p>
+<p>Aur Sun Dumbo!! , mrko pata hai tum aaj kal jyada marks aur us rechecking wale bakaiti ko lekar bahut sad ho gyi ho, aur upar se mummy ne bhi daant diya. Par apne Puppu ki baat dhyaan se suno 🙈: ek paper ka tukda ye decide nahi karta ki tum kitni smart aur amazing ho. Tum unn marks se kahin zyada badhkar ho, and I am so, so insanely proud of you. Hamesha. Aur mehenat waste ni jaata kabhi bhyi! don't worry dekhna abhi kaam ayega pakka likh ke lele! </p>
+<p>DEKHOO!!! waise to I love every single bit of you 🙈. Par sabse zyada pyaar mujhe is baat pe aata hai ki tu jooo ekdummm pamperr kr detiii haiiiiiiiii naaaaaaa nfkjbshafkjbadsf. Jab main pareshan hota hoon hu toh tu jis tarah console karti haiiiiiiiiii... tere saath hona mujhe ek dam proper, warm comfort zone jaisa lagta hai. Safe place , Bubu. 🤭🏡</p>
+<p>Humara future hamesha ke liye hai jo bhi hoga sath me hi hoga 🌚, aur main promise karta hoon ki main bahut, bahut, bahuttt jald tumse milne aa raha hoon. Bas thoda sa wait aur peeezzz 🥺! ✨</p>`,
+      signature: "Aur Kon, Dewanch ❤️",
+    }
+  },
+  {
+    label: "More envelopes...", sublabel: "Coming Soon! 💌",
+    seal: "⏳", accentColor: "#D4A843",
+    isSpecial: false,
+    letter: {
+      eyebrow: "In the works",
+      title: "Patience, my love...",
+      body: `<p>I'm still writing more letters for you! They'll be ready when you need them. 😉</p>`,
+      signature: "Yours, Dewansh",
     }
   }
 ];

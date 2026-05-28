@@ -826,6 +826,7 @@
       } else if (item.photo) {
         const img = document.createElement('img');
         img.className = 'polaroid-img';
+        if (item.is5x7) img.classList.add('polaroid-5x7');
         img.src = item.photo; img.alt = item.title; img.loading = 'lazy';
         polaroid.appendChild(img);
       } else {
