@@ -22,10 +22,10 @@ const CONFIG = {
 
 /* ─── PLAYLIST DATA ───────────────────────────────────────── */
 const PLAYLIST = [
-  { title: "Ehsaan Tera Hoga Mujh Par", file: "./assets/audio/ehsaan-tera.mp3", category: "our song 🌸" },
-  { title: "Pal Pal Dil Ke Paas", file: "./assets/audio/pal-pal.mp3", category: "classic 🌙" },
+  { title: "TUM TAK", file: "./assets/audio/Tum-tak.mp3", category: "First Story ✨" },
   { title: "Aaja piya tohe pyaar doon", file: "./assets/audio/pyaar-doon.mp3", category: "forever 💖" },
-  { title: "TUM TAK", file: "./assets/audio/Tum-tak.mp3", category: "First Story ✨" }
+  { title: "Ehsaan Tera Hoga Mujh Par", file: "./assets/audio/ehsaan-tera.mp3", category: "our song 🌸" },
+  { title: "Pal Pal Dil Ke Paas", file: "./assets/audio/pal-pal.mp3", category: "classic 🌙" }
 ];
 
 /* ─── TIMELINE DATA ─────────────────────────────────────── */
